@@ -1,0 +1,104 @@
+.boxForm {
+    width: 100%;
+    max-width: 600px;
+    max-height: 400px;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: #02132e;
+    color: white;
+    padding: 3%;
+    border-radius: 15px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    overflow: auto; /* Adiciona barras de rolagem quando o conteúdo excede as dimensões */
+    box-sizing: border-box; /* Inclui padding e borda no cálculo do tamanho total */
+
+    /* Ajustes para respeitar as dimensões máximas */
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-bottom: 50px;
+}
+
+/* Adicione este estilo ao último filho se quiser que ele respeite as dimensões máximas */
+.boxForm > :last-child {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+
+/* Para navegadores baseados no WebKit (como Chrome e Safari) */
+.boxForm::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 30px;
+}
+
+.boxForm::-webkit-scrollbar-thumb {
+    background-color: #61dafb; /* Cor da barra de rolagem */
+    border-radius: 4px; /* Borda arredondada */
+    border-radius: 30px;
+}
+
+/* Para o Internet Explorer */
+.boxForm::-ms-scrollbar-thumb {
+    background-color: #61dafb; /* Cor da barra de rolagem */
+    border-radius: 4px; /* Borda arredondada */
+    border-radius: 30px;
+}
+
+.boxForm::-ms-scrollbar-track {
+    background-color: #02132e; /* Cor do fundo da barra de rolagem */
+}
+
+
+/* Adiciona estilos ao título do modal */
+.boxForm h2 {
+    margin-top: 50px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #61dafb;
+}
+
+/* Adiciona estilos aos labels e inputs */
+.boxForm label {
+    display: block;
+    margin-bottom: 10px;
+    width: 60%;
+}
+
+.boxForm input,
+.boxForm select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #02132e;
+    color: white;
+}
+
+/* Adiciona estilos aos botões */
+.boxForm button {
+    background-color: #61dafb;
+    color: #02132e;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.boxForm button[type="button"] {
+    background-color: #555;
+    margin-right: 10px;
+}
+
+
+.invalid-event-message {
+    color: #ff4136;
+    margin-top: 10px;
+}

@@ -1,0 +1,31 @@
+body, button, input {
+  font-family: "Comfortaa", sans-serif;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #222222;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  text-align: center;
+  overflow-x: hidden;
+  color: white;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+
+.link {
+  color: #61dafb;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

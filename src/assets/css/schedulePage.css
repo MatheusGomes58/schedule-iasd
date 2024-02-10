@@ -1,0 +1,101 @@
+.monthBanner {
+    color: white;
+    background-color: #173f74;
+    width: 100vw;
+    padding: 1%;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.button-icon {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.button-icon i {
+    color: white;
+    font-size: 30px;
+}
+
+.button-icon:disabled i {
+    color: rgb(93, 91, 91);
+    font-size: 30px;
+}
+
+
+.invalid-event {
+    background-color: rgba(124, 0, 0, 0.552);
+}
+
+.sended-event {
+    background-color: rgba(45, 124, 0, 0.552);
+}
+
+.transparent-background {
+    background-color: none;
+}
+
+.inactive-event {
+    background-color: rgba(136, 118, 0, 0.552);
+}
+
+.btnCircle {
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    background-color: #173f74;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    /* Adiciona uma sombra suave */
+    margin-left: 40px;
+    margin-bottom: 40px;
+}
+
+.btnAdd:hover {
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.6);
+    /* Adiciona uma sombra suave */
+}
+
+.addEvent {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: black;
+    text-align: center;
+}
+
+@media print {
+    body{
+        color: black;
+        background-color: white;
+    }
+
+    .printable-content {
+        display: none;
+    }
+}
