@@ -84,6 +84,7 @@ td {
     padding: 8px;
     text-align: left;
     word-break: break-word; 
+    max-width: 200px;
 }
 
 th {
