@@ -2,6 +2,16 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
+/*const firebaseConfig1 = {
+  apiKey: "AIzaSyCO3dicnFgkU9fWbMIs_XIVOv-jMpVeEjE",
+  authDomain: "agenda-barao.firebaseapp.com",
+  projectId: "agenda-barao",
+  storageBucket: "agenda-barao.appspot.com",
+  messagingSenderId: "219773549070",
+  appId: "1:219773549070:web:0788958515296f9c329a5f",
+  measurementId: "G-3653N9M2VJ"
+};*/
+
 const firebaseConfig1 = {
   apiKey: "AIzaSyD71aajbuopH-VZ9gmo5poOFyp1Dhevw2s",
   authDomain: "agendaiasd-ccb49.firebaseapp.com",
