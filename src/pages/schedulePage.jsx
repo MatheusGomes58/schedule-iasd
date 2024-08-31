@@ -282,8 +282,9 @@ const SchedulePage = () => {
                 <th>Responsável</th>
                 <th>Descrição</th>
                 <th>Local</th>
-                {(admPrivileges || validPrivileges || sendedPrivileges || aprovationPrivileges) && !editPrivileges ? <th className='printable-content'>Ativação</th> : ''}
+                <th className='printable-content'>Status do evento</th>
                 {!editPrivileges && <th className='printable-content'>Ações</th>}
+                
               </tr>
             </thead>
             <tbody>
@@ -312,6 +313,11 @@ const SchedulePage = () => {
                       {(admPrivileges || (sendedPrivileges && !event.active)) && (
                         <Switch label={event.sended?'Enviado':'Pendente'} status={event.sended} onToggle={(id, newStatus) => updateSended(id, newStatus)} id={event.id} />
                       )}
+                    </td>
+                  )}
+                  {(!admPrivileges && !validPrivileges && !sendedPrivileges && !aprovationPrivileges)  &&
+                    (<td className='printable-content'>
+                      {event.active?'Aprovado pela comissão':event.sended?'Enviado e aguaradndo aprovação':'Em análise pelo departamento'}
                     </td>
                   )}
                   {!editPrivileges && <td className='printable-content'>
