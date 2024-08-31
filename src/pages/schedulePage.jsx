@@ -288,7 +288,7 @@ const SchedulePage = () => {
             </thead>
             <tbody>
               {events[month].map(event => (
-                (userPrivileges || event.organizer === localStorage.getItem('currentEmail') || event.sended) &&
+                (userPrivileges || event.organizer === localStorage.getItem('currentEmail') || event.sended || editPrivileges) &&
                 <tr
                   key={event.id}
                   className={`
