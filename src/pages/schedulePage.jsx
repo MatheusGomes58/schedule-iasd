@@ -103,7 +103,7 @@ const SchedulePage = () => {
     <div className="schedule-page">
       <div className="menu printable-content">
         <button className="menu-button" onClick={() => setShowForm(true)}>
-          <FaPlus /> Add Event
+          <FaPlus /> Add
         </button>
         <button className="menu-button" onClick={() => setSearchBarVisible(!searchBarVisible)}>
           <FaSearch /> Search

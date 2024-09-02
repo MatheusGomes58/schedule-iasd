@@ -114,7 +114,7 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
 
     return (
         <tr id={event.id} className={handleClassName(event)}>
-            <td>{event.day}</td>
+            <td>{event.day}{event.endDay?' - '+event.endDay:''}</td>
             <td>{event.startTime} - {event.endTime}</td>
             <td>{event.department}</td>
             <td>{event.responsible}</td>
