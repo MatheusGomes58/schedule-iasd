@@ -1,6 +1,6 @@
 // EventForm.js
 import React, { useState, useEffect } from 'react';
-import { db, db2 } from '../firebase/firebase';
+import { db } from '../firebase/firebase';
 import './form.css';
 
 const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, departments }) => {
@@ -18,7 +18,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
         organizer: '',
         isValid: '',
         active: '',
-        endDay: '', // Adicionando campo para o dia final
+        endDay: '',
     });
     const [leaders, setLeaders] = useState([]);
     const [showEndDate, setShowEndDate] = useState(false);
@@ -47,7 +47,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             }
         };
 
-        fetchData(); // Call the fetchData function
+        fetchData();
 
         const unsubscribeLeaders = db.collection('usePrivileges').onSnapshot(snapshot => {
             const leadersData = snapshot.docs.map(doc => ({
@@ -61,8 +61,6 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             unsubscribeLeaders();
         };
     }, [initialData]);
-
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -79,39 +77,40 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
     const handleSave = async (e) => {
         e.preventDefault();
 
-        // Validar campos
+        // Validação dos campos
         if (!formData.day || !formData.month || !formData.startTime || !formData.endTime || !formData.department || !formData.responsible || !formData.location || !formData.description) {
-            setFormError('Por favor, preencha todos os campos.');
+            setFormError('Por favor, preencha todos os campos obrigatórios.');
             setIsValidEvent(false);
             return;
         }
 
         // Verificar se já existe um evento na mesma data
         const eventsRef = db.collection('events');
-        const query = eventsRef
-            .where('day', '==', formData.day);
+        const query = eventsRef.where('day', '==', formData.day);
 
         const existingEvents = await query.get();
 
         const isInvalid = existingEvents.docs.some(doc => {
             const event = doc.data();
             const startTimeOverlap = (formData.startTime >= event.startTime && formData.startTime < event.endTime);
-            const endTimeOverlap = (formData.endTime >= event.startTime && formData.endTime <= event.endTime);
+            const endTimeOverlap = (formData.endTime > event.startTime && formData.endTime <= event.endTime);
             const eventTimeOverLap = (formData.startTime < event.startTime && formData.endTime > event.endTime);
 
             return startTimeOverlap || endTimeOverlap || eventTimeOverLap;
         });
 
         if (isInvalid && !initialData) {
-            formData.isValid = false;
-        } else if(!initialData) {
-            formData.isValid = true;
+            setFormError('O horário selecionado conflita com outro evento.');
+            setIsValidEvent(false);
+            return;
         }
 
+        formData.isValid = !isInvalid;
         formData.active = false;
         setFormError('');
         onSave(formData);
 
+        // Resetar o formulário
         setFormData({
             day: '',
             month: '',
@@ -124,12 +123,13 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             organizer: '',
             isValid: '',
             active: '',
-            endDay: '', // Limpar o dia final ao salvar
+            endDay: '',
         });
     };
 
     const handleCancel = () => {
         onCancel();
+        setFormError('');
         setFormData({
             day: '',
             month: '',
@@ -142,91 +142,171 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             organizer: '',
             isValid: '',
             active: '',
-            endDay: '', // Limpar o dia final ao cancelar
+            endDay: '',
         });
     };
 
     return (
-        <div className='formBackground'>
-            <form className='boxForm' onSubmit={handleSave}>
-                <h2>Adicionar Novo Evento</h2>
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <form className="event-form" onSubmit={handleSave}>
+                    <h2>Adicionar Novo Evento</h2>
 
-                <label>
-                    Dia Inicial:
-                    <input type="number" name="day" value={formData.day} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="day">Dia Inicial<span className="required">*</span></label>
+                        <input
+                            type="number"
+                            id="day"
+                            name="day"
+                            value={formData.day}
+                            onChange={handleChange}
+                            required
+                            min="1"
+                            max="31"
+                            placeholder="Ex: 15"
+                        />
+                    </div>
 
-                {showEndDate && (
-                    <label>
-                        Dia Final (opcional):
-                        <input type="number" name="endDay" value={formData.endDay} onChange={handleChange} />
-                    </label>
-                )}
+                    {showEndDate && (
+                        <div className="form-group">
+                            <label htmlFor="endDay">Dia Final (opcional)</label>
+                            <input
+                                type="number"
+                                id="endDay"
+                                name="endDay"
+                                value={formData.endDay}
+                                onChange={handleChange}
+                                min="1"
+                                max="31"
+                                placeholder="Ex: 16"
+                            />
+                        </div>
+                    )}
 
-                <button type="button" onClick={toggleEndDate}>
-                    {showEndDate ? 'Ocultar Dia Final' : 'Adicionar Dia Final'}
-                </button>
+                    <button type="button" className="toggle-end-date" onClick={toggleEndDate}>
+                        {showEndDate ? 'Remover Dia Final' : 'Adicionar Dia Final'}
+                    </button>
 
-                <label>
-                    Mês:
-                    <input type="month" name="month" value={formData.month} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="month">Mês<span className="required">*</span></label>
+                        <input
+                            type="month"
+                            id="month"
+                            name="month"
+                            value={formData.month}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
-                <label>
-                    Hora de Início:
-                    <input type="time" name="startTime" value={formData.startTime} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="startTime">Hora de Início<span className="required">*</span></label>
+                        <input
+                            type="time"
+                            id="startTime"
+                            name="startTime"
+                            value={formData.startTime}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
-                <label>
-                    Hora de Término:
-                    <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="endTime">Hora de Término<span className="required">*</span></label>
+                        <input
+                            type="time"
+                            id="endTime"
+                            name="endTime"
+                            value={formData.endTime}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
-                <label>
-                    Departamento:
-                    <select name="department" value={formData.department} onChange={handleChange}>
-                        <option value="">Selecione um departamento</option>
-                        {departments.map(dep => (
-                            <option value={dep.nome}>
-                                {dep.nome}
-                            </option>
-                        ))}
-                    </select>
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="department">Departamento<span className="required">*</span></label>
+                        <select
+                            id="department"
+                            name="department"
+                            value={formData.department}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Selecione um departamento</option>
+                            {departments.map(dep => (
+                                <option key={dep.id} value={dep.nome}>
+                                    {dep.nome}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <label>
-                    Responsável:
-                    <input type="text" name="responsible" value={formData.responsible} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="responsible">Responsável<span className="required">*</span></label>
+                        <input
+                            type="text"
+                            id="responsible"
+                            name="responsible"
+                            value={formData.responsible}
+                            onChange={handleChange}
+                            required
+                            placeholder="Nome do responsável"
+                        />
+                    </div>
 
-                <label>
-                    Local:
-                    <input type="text" name="location" value={formData.location} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="location">Local<span className="required">*</span></label>
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            value={formData.location}
+                            onChange={handleChange}
+                            required
+                            placeholder="Local do evento"
+                        />
+                    </div>
 
-                <label>
-                    Descrição:
-                    <input type="text" name="description" value={formData.description} onChange={handleChange} />
-                </label>
+                    <div className="form-group">
+                        <label htmlFor="description">Descrição<span className="required">*</span></label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            required
+                            placeholder="Descrição do evento"
+                        ></textarea>
+                    </div>
 
+                    <div className="form-group">
+                        <label htmlFor="organizer">Organizador<span className="required">*</span></label>
+                        <select
+                            id="organizer"
+                            name="organizer"
+                            value={formData.organizer}
+                            onChange={handleChange}
+                            disabled={!admAcess}
+                            required
+                        >
+                            <option value="">Selecione um líder</option>
+                            {leaders.map(leader => (
+                                <option key={leader.id} value={leader.email}>
+                                    {leader.email}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <label>
-                    Organizador:
-                    <select name="organizer" value={formData.organizer} onChange={handleChange} disabled={!admAcess}>
-                        <option value="">Selecione um Lider</option>
-                        {leaders.map(dep => (
-                            <option value={dep.email}>
-                                {dep.email}
-                            </option>
-                        ))}
-                    </select>
-                </label>
+                    {!isValidEvent && <p className="error-message">{formError}</p>}
+                    {formError && isValidEvent && <p className="error-message">{formError}</p>}
 
-                {!isValidEvent && <p className="invalid-event-message">Este evento é inválido.</p>}
-
-                <button type="submit">Adicionar Evento</button>
-                <button type="button" onClick={handleCancel}>Cancelar</button>
-            </form>
+                    <div className="form-actions">
+                        <button type="submit" className="save-button">Salvar</button>
+                        <button type="button" className="cancel-button" onClick={handleCancel}>Cancelar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

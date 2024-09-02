@@ -237,6 +237,10 @@ const SchedulePage = () => {
     setEditing(false);
   };
 
+  const handleCancel = () => {
+    setSearchBarVisible(!searchBarVisible)
+  }
+
   const handleSearch = (term) => {
     console.log('Search Term:', term);
     setSearchTerm(term);
@@ -284,7 +288,7 @@ const SchedulePage = () => {
                 <th>Local</th>
                 <th className='printable-content'>Status do evento</th>
                 {!editPrivileges && <th className='printable-content'>Ações</th>}
-                
+
               </tr>
             </thead>
             <tbody>
@@ -305,21 +309,21 @@ const SchedulePage = () => {
                   {(admPrivileges || validPrivileges || sendedPrivileges || aprovationPrivileges) && !editPrivileges &&
                     (<td className='printable-content'>
                       {(admPrivileges || aprovationPrivileges) && (
-                        <Switch label={event.active?'Aprovado':'Em Aprovação'} status={event.active} onToggle={(id, newStatus) => updateActive(id, newStatus)} id={event.id} />
+                        <Switch label={event.active ? 'Aprovado' : 'Em Aprovação'} status={event.active} onToggle={(id, newStatus) => updateActive(id, newStatus)} id={event.id} />
                       )}
                       {(admPrivileges || (validPrivileges && !event.active)) && (
-                        <Switch label={event.isValid?'Sem Conflitos':'Com Conflitos'} status={event.isValid} onToggle={(id, newStatus) => updateValidad(id, newStatus)} id={event.id} />
+                        <Switch label={event.isValid ? 'Sem Conflitos' : 'Com Conflitos'} status={event.isValid} onToggle={(id, newStatus) => updateValidad(id, newStatus)} id={event.id} />
                       )}
                       {(admPrivileges || (sendedPrivileges && !event.active)) && (
-                        <Switch label={event.sended?'Enviado':'Pendente'} status={event.sended} onToggle={(id, newStatus) => updateSended(id, newStatus)} id={event.id} />
+                        <Switch label={event.sended ? 'Enviado' : 'Pendente'} status={event.sended} onToggle={(id, newStatus) => updateSended(id, newStatus)} id={event.id} />
                       )}
                     </td>
-                  )}
-                  {(!admPrivileges && !validPrivileges && !sendedPrivileges && !aprovationPrivileges)  &&
+                    )}
+                  {(!admPrivileges && !validPrivileges && !sendedPrivileges && !aprovationPrivileges) &&
                     (<td className='printable-content'>
-                      {event.active?'Aprovado pela comissão':event.sended?'Enviado e aguaradndo aprovação':'Em análise pelo departamento'}
+                      {event.active ? 'Aprovado pela comissão' : event.sended ? 'Enviado e aguaradndo aprovação' : 'Em análise pelo departamento'}
                     </td>
-                  )}
+                    )}
                   {!editPrivileges && <td className='printable-content'>
                     {!event.sended && (
                       <button
@@ -354,19 +358,21 @@ const SchedulePage = () => {
 
         </div>
       ))}
+      <div className='addFunctions printable-content'>
+        {searchBarVisible && <SearchBar onSearch={setSearchTerm} suggestions={departments} onCancel={handleCancel} />}
+        {showForm && (
+          <EventForm
+            key={selectedEvent ? selectedEvent.id : 'newEvent'} // Add this key prop
+            onSave={editing ? (data) => handleUpdateEvent(selectedEvent.id, data) : handleAddEvent}
+            onCancel={handleCancelForm}
+            admAcess={admPrivileges}
+            departments={departments}
+            initialData={selectedEvent}
+          />
+        )}
+      </div>
       {!printing && (
         <div className='addEvent printable-content'>
-          {searchBarVisible && <SearchBar onSearch={setSearchTerm} suggestions={departments} />}
-          {showForm && (
-            <EventForm
-              key={selectedEvent ? selectedEvent.id : 'newEvent'} // Add this key prop
-              onSave={editing ? (data) => handleUpdateEvent(selectedEvent.id, data) : handleAddEvent}
-              onCancel={handleCancelForm}
-              admAcess={admPrivileges}
-              departments={departments}
-              initialData={selectedEvent}
-            />
-          )}
           <button className='btnCircle' onClick={handleLogout}>
             <i className="fas fa-sign-out-alt"></i>
           </button>

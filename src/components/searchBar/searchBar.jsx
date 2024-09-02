@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './searchBar.css'; // Certifique-se de ter um arquivo CSS para estilizar o SearchBar
 
-const SearchBar = ({ onSearch, suggestions }) => {
+const SearchBar = ({ onSearch, suggestions, onCancel }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -12,6 +12,14 @@ const SearchBar = ({ onSearch, suggestions }) => {
     const handleClear = () => {
         setSearchTerm("");
         onSearch("");
+    };
+
+    const handleCancel = () => {
+        setSearchTerm("");
+        setShowSuggestions(false);
+        if (onCancel) {
+            onCancel(); // Chama a função de cancelamento passada por parâmetro
+        }
     };
 
     const handleInputChange = (e) => {
@@ -41,7 +49,7 @@ const SearchBar = ({ onSearch, suggestions }) => {
                     onChange={handleInputChange}
                     onClick={handleInputClick} // Adiciona o manipulador de clique na barra de pesquisa
                 />
-                <button className="clear-button" onClick={handleClear}>
+                <button className="clear-button" onClick={onCancel? handleCancel : handleClear}>
                     <i className="fas fa-times"></i>
                 </button>
                 <button className="search-button" onClick={handleSearch}>
