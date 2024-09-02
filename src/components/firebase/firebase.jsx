@@ -2,27 +2,8 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-/*const firebaseConfig1 = {
-  apiKey: "AIzaSyCO3dicnFgkU9fWbMIs_XIVOv-jMpVeEjE",
-  authDomain: "agenda-barao.firebaseapp.com",
-  projectId: "agenda-barao",
-  storageBucket: "agenda-barao.appspot.com",
-  messagingSenderId: "219773549070",
-  appId: "1:219773549070:web:0788958515296f9c329a5f",
-  measurementId: "G-3653N9M2VJ"
-};*/
-
+// Configuração do Firebase
 const firebaseConfig1 = {
-  apiKey: "AIzaSyD71aajbuopH-VZ9gmo5poOFyp1Dhevw2s",
-  authDomain: "agendaiasd-ccb49.firebaseapp.com",
-  projectId: "agendaiasd-ccb49",
-  storageBucket: "agendaiasd-ccb49.appspot.com",
-  messagingSenderId: "372111701662",
-  appId: "1:372111701662:web:8a5da0b08c1140779d6d8f",
-  measurementId: "G-8YG9YKHNZ7"
-};
-
-/*const firebaseConfig1 = {
   apiKey: "AIzaSyCTKMVCS-bq6ATJq76NfPML5QWR-6aUh2A",
   authDomain: "mmschedule-431da.firebaseapp.com",
   projectId: "mmschedule-431da",
@@ -30,22 +11,14 @@ const firebaseConfig1 = {
   messagingSenderId: "1046379446876",
   appId: "1:1046379446876:web:89777debf84fae6c055c99",
   measurementId: "G-L16XNRX91L"
-};*/
-
-const firebaseConfig2 = {
-  apiKey: "AIzaSyAEEYZKzvkZsn7Jfql0gPjdmuRgmqOCX3Y",
-  authDomain: "systemiasd.firebaseapp.com",
-  databaseURL: "https://systemiasd-default-rtdb.firebaseio.com",
-  projectId: "systemiasd",
-  storageBucket: "systemiasd.appspot.com",
-  messagingSenderId: "1024933571418",
-  appId: "1:1024933571418:web:abc3e9e106b8385966a163"
 };
 
+// Inicializa o aplicativo Firebase
 const app = firebase.initializeApp(firebaseConfig1, 'app1');
+
+// Inicializa o Firestore e Auth
 const db = app.firestore();
+const auth = app.auth();
 
-const app2 = firebase.initializeApp(firebaseConfig2, 'app2');
-const db2 = app2.firestore();
-
-export { db, db2, app, app2 };
+// Exporta o Firestore, Auth e App
+export { db, auth, app };

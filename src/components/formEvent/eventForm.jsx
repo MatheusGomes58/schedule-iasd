@@ -1,4 +1,3 @@
-// EventForm.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/firebase';
 import './form.css';
@@ -12,6 +11,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
         startTime: '',
         endTime: '',
         department: '',
+        newDepartment: '',
         responsible: '',
         location: '',
         description: '',
@@ -20,8 +20,10 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
         active: '',
         endDay: '',
     });
+    const [departament, setDepartament] = useState('');
     const [leaders, setLeaders] = useState([]);
     const [showEndDate, setShowEndDate] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -117,6 +119,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             startTime: '',
             endTime: '',
             department: '',
+            newDepartment: '',
             responsible: '',
             location: '',
             description: '',
@@ -136,6 +139,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             startTime: '',
             endTime: '',
             department: '',
+            newDepartment: '',
             responsible: '',
             location: '',
             description: '',
@@ -144,6 +148,36 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             active: '',
             endDay: '',
         });
+    };
+
+    const handleCancelAddDepartament = () => {
+        setShowModal(false);
+        setDepartament('Selecione um departamento');
+    }
+
+    const handleAddDepartment = async (e) => {
+        e.preventDefault();
+        if (formData.newDepartment.trim()) {
+            try {
+                await db.collection('departamento').add({ nome: formData.newDepartment });
+                console.log('Novo departamento adicionado');
+                // Atualizar lista de departamentos se necessário
+                setDepartament(formData.newDepartment);
+                const departamentosSnapshot = await db.collection('departamento').get();
+                const updatedDepartments = departamentosSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                departments = updatedDepartments; // Atualiza a lista de departamentos no componente
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    newDepartment: ''
+                }));
+                setShowModal(false); // Fechar modal após adicionar
+            } catch (error) {
+                console.error('Erro ao adicionar departamento:', error);
+            }
+        }
     };
 
     return (
@@ -228,8 +262,15 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                         <select
                             id="department"
                             name="department"
-                            value={formData.department}
-                            onChange={handleChange}
+                            value={departament? departament : formData.department}
+                            onChange={(e) => {
+                                handleChange(e);
+                                if (e.target.value === 'Outro') {
+                                    setShowModal(true);
+                                }else{
+                                    setDepartament(e.target.value);
+                                }
+                            }}
                             required
                         >
                             <option value="">Selecione um departamento</option>
@@ -238,6 +279,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                                     {dep.nome}
                                 </option>
                             ))}
+                            <option value="Outro">Outro</option>
                         </select>
                     </div>
 
@@ -255,7 +297,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="location">Local<span className="required">*</span></label>
+                        <label htmlFor="location">Localização<span className="required">*</span></label>
                         <input
                             type="text"
                             id="location"
@@ -276,36 +318,55 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                             onChange={handleChange}
                             required
                             placeholder="Descrição do evento"
-                        ></textarea>
+                        />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="organizer">Organizador<span className="required">*</span></label>
-                        <select
+                        <input
+                            type="text"
                             id="organizer"
                             name="organizer"
                             value={formData.organizer}
                             onChange={handleChange}
-                            disabled={!admAcess}
                             required
-                        >
-                            <option value="">Selecione um líder</option>
-                            {leaders.map(leader => (
-                                <option key={leader.id} value={leader.email}>
-                                    {leader.email}
-                                </option>
-                            ))}
-                        </select>
+                            placeholder="Email do organizador"
+                        />
                     </div>
 
-                    {!isValidEvent && <p className="error-message">{formError}</p>}
-                    {formError && isValidEvent && <p className="error-message">{formError}</p>}
-
-                    <div className="form-actions">
-                        <button type="submit" className="save-button">Salvar</button>
-                        <button type="button" className="cancel-button" onClick={handleCancel}>Cancelar</button>
+                    <div className="form-group">
+                        <button type="submit" className="btn btn-primary">Salvar</button>
+                        <button type="button" className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
                     </div>
+
+                    {formError && <div className="form-error">{formError}</div>}
                 </form>
+
+                {showModal && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <h2>Adicionar Novo Departamento</h2>
+                            <form onSubmit={handleAddDepartment}>
+                                <div className="form-group">
+                                    <label htmlFor="newDepartment">Nome do Novo Departamento<span className="required">*</span></label>
+                                    <input
+                                        type="text"
+                                        id="newDepartment"
+                                        name="newDepartment"
+                                        value={formData.newDepartment}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Nome do departamento"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <button type="submit" className="btn btn-primary">Adicionar</button>
+                                    <button type="button" className="btn btn-secondary" onClick={handleCancelAddDepartament}>Fechar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

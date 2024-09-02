@@ -4,8 +4,6 @@ async function signInWithEmailAndPassword(email, password) {
   try {
     const userCredential = await app.auth().signInWithEmailAndPassword(email, password);
 
-    localStorage.setItem('currentEmail', email);
-
     if (userCredential) {
       window.location.href = "./schedulepage";
     }

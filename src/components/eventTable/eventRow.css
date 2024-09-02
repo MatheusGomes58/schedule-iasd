@@ -1,0 +1,103 @@
+/* Estilo base para os botões */
+.button {
+    background-color: #007bff;
+    /* Azul padrão */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    /* Cantos arredondados */
+    transition: background-color 0.3s, transform 0.2s;
+    /* Transições suaves */
+}
+
+/* Estilo para o botão Editar */
+.button-edit {
+    background-color: #28a745;
+    /* Verde */
+}
+
+.button-edit:hover {
+    background-color: #218838;
+    /* Verde escuro */
+    transform: scale(1.05);
+    /* Leve aumento no hover */
+}
+
+/* Estilo para o botão Deletar */
+.button-delete {
+    background-color: #dc3545;
+    /* Vermelho */
+}
+
+.button-delete:hover {
+    background-color: #c82333;
+    /* Vermelho escuro */
+    transform: scale(1.05);
+    /* Leve aumento no hover */
+}
+
+/* Estilo para o botão Enviar */
+.button-send {
+    background-color: #ffc107;
+    /* Amarelo */
+}
+
+.button-send:hover {
+    background-color: #e0a800;
+    /* Amarelo escuro */
+    transform: scale(1.05);
+    /* Leve aumento no hover */
+}
+
+
+/* Estilos de eventos */
+.invalid-event {
+    background-color: rgba(255, 82, 82, 0.6);
+    color: #000000;
+    border-right: 8px solid #c62828;
+    border-left: 8px solid #c62828;
+}
+
+.sended-event {
+    background-color: rgba(76, 175, 80, 0.6);
+    color: #000000;
+    border-right: 8px solid #388e3c;
+    border-left: 8px solid #388e3c;
+}
+
+.inactive-event {
+    background-color: rgba(255, 193, 7, 0.6);
+    color: #000000;
+    border-right: 8px solid #f57c00;
+    border-left: 8px solid #f57c00;
+}
+
+.invalid-event-aprovated {
+    color: #000000;
+    border-left: 8px solid #c62828;
+    border-right: 8px solid #c62828;
+}
+
+.sended-event-aprovated {
+    color: #000000;
+    border-right: 8px solid #388e3c;
+    border-left: 8px solid #388e3c;
+}
+
+.inactive-event-aprovated {
+    color: #000000;
+    border-left: 8px solid #f57c00;
+    border-right: 8px solid #f57c00;
+}
+
+.tableHead {
+    color: #000000;
+    border: 8px solid #173f74;
+}

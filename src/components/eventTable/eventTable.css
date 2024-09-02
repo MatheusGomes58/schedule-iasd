@@ -1,0 +1,59 @@
+/* Tabela */
+table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: black;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #173f74;
+    color: white;
+    font-weight: bold;
+}
+
+td {
+    background-color: transparent;
+    /* Removido fundo branco das células */
+}
+
+tr {
+    background-color: white;
+}
+
+tr:hover td {
+    background-color: rgba(0, 0, 0, 0.05);
+    /* Destaque suave ao passar o mouse */
+}
+
+@media screen and (max-width: 768px) {
+    .addEvent {
+        flex-direction: column;
+        width: auto;
+        left: 10%;
+        transform: translateX(0);
+    }
+
+    table,
+    th,
+    td {
+        display: block;
+        width: 100%;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+        padding: 10px 5px;
+    }
+}

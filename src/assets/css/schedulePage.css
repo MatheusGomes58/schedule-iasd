@@ -31,48 +31,67 @@
     transform: scale(1.1);
 }
 
-/* Estilos de eventos */
-.invalid-event {
-    background-color: rgba(255, 82, 82, 0.6);
-    color: #000000;
-    border-left: 5px solid #c62828;
+
+
+/* Estilos do menu de opções */
+.schedule-page {
+    position: relative;
+    /* Para permitir o posicionamento absoluto do menu */
+    padding-bottom: 60px;
+    /* Espaço para o menu na parte inferior */
 }
 
-.sended-event {
-    background-color: rgba(76, 175, 80, 0.6);
-    color: #000000;
-    border-left: 5px solid #388e3c;
-}
-
-.inactive-event {
-    background-color: rgba(255, 193, 7, 0.6);
-    color: #000000;
-    border-left: 5px solid #f57c00;
-}
-
-/* Botões circulares */
-.btnCircle {
-    border-radius: 100%;
-    width: 50px;
-    height: 50px;
-    background-color: #1e4b84;
-    color: white;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    margin: 10px;
+.menu {
+    position: fixed;
+    /* Fixa o menu no fundo da página */
+    bottom: 0;
+    left: 0;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
+    /* Distribui os itens igualmente */
+    background-color: #173f74;
+    /* Cor de fundo branca */
+    border-top: 1px solid #173f74;
+    /* Borda superior cinza claro */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
+    padding: 10px;
+    z-index: 1000;
+    /* Garante que o menu fique sobre outros elementos */
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    color: #f8f8f8;
+    /* Cor do texto */
+    font-size: 20px;
+    /* Tamanho do ícone */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    gap: 5px;
 }
 
-
-.btnCircle:hover {
-    background-color: #1a3d6f;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
-    transform: scale(1.05);
+.menu-button:hover {
+    color: #007bff;
+    /* Cor do texto ao passar o mouse */
 }
+
+.menu-button .icon {
+    font-size: 24px;
+    /* Tamanho do ícone */
+}
+
+.menu-button span {
+    font-size: 12px;
+    /* Tamanho do texto abaixo do ícone */
+    color: #666;
+    /* Cor do texto abaixo do ícone */
+}
+
 
 .addEvent {
     position: fixed;
@@ -87,47 +106,20 @@
 
 .addFunctions {
     position: fixed;
-    bottom: 0; /* Ajusta a posição para a parte inferior da tela */
-    left: 0; /* Ajusta a posição para a borda esquerda da tela */
-    width: 100%; /* Faz com que o componente ocupe toda a largura da tela */
+    bottom: 0;
+    /* Ajusta a posição para a parte inferior da tela */
+    left: 0;
+    /* Ajusta a posição para a borda esquerda da tela */
+    width: 100%;
+    /* Faz com que o componente ocupe toda a largura da tela */
     z-index: 2000;
     display: flex;
-    justify-content: space-around; /* Espaça os itens igualmente ao longo da largura */
-    padding: 0 20px; /* Adiciona algum padding nas laterais para evitar que os itens fiquem colados às bordas */
-    box-sizing: border-box; /* Inclui o padding no cálculo da largura total */
-}
-
-
-/* Tabela */
-table {
-    border-collapse: collapse;
-    width: 80%;
-    margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: white;
-    color: black;
-}
-
-th,
-td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #173f74;
-    color: white;
-    font-weight: bold;
-}
-
-td {
-    background-color: transparent; /* Removido fundo branco das células */
-}
-
-tr:hover td {
-    background-color: rgba(0, 0, 0, 0.05); /* Destaque suave ao passar o mouse */
+    justify-content: space-around;
+    /* Espaça os itens igualmente ao longo da largura */
+    padding: 0 20px;
+    /* Adiciona algum padding nas laterais para evitar que os itens fiquem colados às bordas */
+    box-sizing: border-box;
+    /* Inclui o padding no cálculo da largura total */
 }
 
 /* Centralizando conteúdo */
@@ -142,27 +134,3 @@ tr:hover td {
     }
 }
 
-@media screen and (max-width: 768px) {
-    .addEvent {
-        flex-direction: column;
-        width: auto;
-        left: 10%;
-        transform: translateX(0);
-    }
-
-    table,
-    th,
-    td {
-        display: block;
-        width: 100%;
-    }
-
-    th {
-        text-align: center;
-    }
-
-    td {
-        text-align: center;
-        padding: 10px 5px;
-    }
-}
