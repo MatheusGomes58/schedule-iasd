@@ -22,6 +22,16 @@ const firebaseConfig1 = {
   measurementId: "G-8YG9YKHNZ7"
 };
 
+/*const firebaseConfig1 = {
+  apiKey: "AIzaSyCTKMVCS-bq6ATJq76NfPML5QWR-6aUh2A",
+  authDomain: "mmschedule-431da.firebaseapp.com",
+  projectId: "mmschedule-431da",
+  storageBucket: "mmschedule-431da.appspot.com",
+  messagingSenderId: "1046379446876",
+  appId: "1:1046379446876:web:89777debf84fae6c055c99",
+  measurementId: "G-L16XNRX91L"
+};*/
+
 const firebaseConfig2 = {
   apiKey: "AIzaSyAEEYZKzvkZsn7Jfql0gPjdmuRgmqOCX3Y",
   authDomain: "systemiasd.firebaseapp.com",
