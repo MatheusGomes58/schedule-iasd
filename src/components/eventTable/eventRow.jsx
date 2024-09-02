@@ -77,7 +77,7 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
         const buttons = [];
     
         // Adiciona o botão de editar se o evento não estiver aprovado ou se o usuário for administrador
-        if ((!event.active && !event.sended) && event.organizer === user.email) {
+        if ((!event.active && !event.sended) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
                 <button key="edit" className='button button-edit' onClick={() => onEditEvent(event)}>
                     <FaEdit /> Editar
@@ -86,13 +86,13 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
         }
     
         // Adiciona o botão de deletar se o evento não estiver aprovado
-        if ((event.active || event.sended) && event.organizer === user.email) {
+        if ((event.active || event.sended ) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
                 <button key="cancel" className='button button-cancel' onClick={() => handleToggle('sended')}>
                     <FaTimes /> Cancelar
                 </button>
             );
-        } else {
+        } else if (event.organizer === user.email || setUserPrivileges.adm){
             buttons.push(
                 <button key="delete" className='button button-delete' onClick={() => onDeleteEvent(event.id)}>
                     <FaTrash /> Deletar
@@ -101,7 +101,7 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
         }
     
         // Adiciona o botão de enviar se o evento estiver aprovado e ainda não tiver sido enviado
-        if ((!event.active && !event.sended) && event.organizer === user.email) {
+        if ((!event.active && !event.sended) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
                 <button key="send" className='button button-send' onClick={() => onSendEvent(event.id)}>
                     <FaPaperPlane /> Enviar

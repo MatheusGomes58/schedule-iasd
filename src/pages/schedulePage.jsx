@@ -29,6 +29,7 @@ const SchedulePage = () => {
   const [eventToConfirm, setEventToConfirm] = useState(null);
   const [confirmationAction, setConfirmationAction] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [status, setStatus] = useState('');
   const [departments, setDepartments] = useState([]);
   const navigate = useNavigate();
 
@@ -57,6 +58,7 @@ const SchedulePage = () => {
     setConfirmationMessage('Tem certeza que deseja deletar este evento?');
     setEventToConfirm(eventId);
     setConfirmationModalVisible(true);
+    setStatus(false);
   };
 
   const handleSendEvent = (eventId) => {
@@ -64,6 +66,7 @@ const SchedulePage = () => {
     setConfirmationMessage('Tem certeza que deseja enviar este evento?');
     setEventToConfirm(eventId);
     setConfirmationModalVisible(true);
+    setStatus(true);
   };
 
   const handleAddEvent = async (newEventData) => {
@@ -77,6 +80,7 @@ const SchedulePage = () => {
     setConfirmationMessage('Tem certeza que deseja' + (value? ' aprovar ' : ' rejeitar ') + 'este evento?');
     setEventToConfirm(eventId);
     setConfirmationModalVisible(true);
+    setStatus(value);
   };
 
   const handleUpdateEvent = async (eventId, newData) => {
@@ -131,7 +135,7 @@ const SchedulePage = () => {
           message={confirmationMessage}
           onConfirm={handleConfirm}
           onCancel={handleCancel}
-          status={confirmationAction ? 'success' : 'danger'}
+          status={status}
         />
       )}
       {searchBarVisible && <SearchBar onSearch={(term) => setSearchTerm(term)} onCancel={() => setSearchBarVisible(false)} />}
@@ -145,8 +149,10 @@ const SchedulePage = () => {
               setSelectedEvent(null);
               setEditing(false);
             }}
+            userPrivileges={userPrivileges}
             departments={departments}
             initialData={selectedEvent}
+            eventsRef={events}
           />
         </div>
       )}

@@ -1,6 +1,7 @@
 /* Tabela */
 table {
-    border-collapse: collapse;
+    border-collapse: separate; /* Altere de collapse para separate */
+    border-spacing: 0 8px; /* Adicione espaçamento entre as linhas */
     width: 90%;
     margin: 20px auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -11,7 +12,17 @@ th,
 td {
     padding: 12px;
     text-align: left;
+    border: 1px solid #00000023; /* Adicione uma borda */
 }
+
+tr {
+    background-color: white;
+}
+
+tr:hover td {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 
 th {
     background-color: #173f74;
@@ -21,7 +32,6 @@ th {
 
 td {
     background-color: transparent;
-    /* Removido fundo branco das células */
 }
 
 tr {
@@ -30,7 +40,6 @@ tr {
 
 tr:hover td {
     background-color: rgba(0, 0, 0, 0.05);
-    /* Destaque suave ao passar o mouse */
 }
 
 @media screen and (max-width: 768px) {
@@ -56,4 +65,19 @@ tr:hover td {
         text-align: center;
         padding: 10px 5px;
     }
+}
+
+/* Defina a altura do cabeçalho para não sobrepor o conteúdo */
+.yearHeader {
+    position: relative;
+}
+
+.stickyYear {
+    position: sticky;
+    top: 0;
+    background-color: #f0f0f0;
+    padding: 10px;
+    font-size: 24px;
+    border-bottom: 2px solid #ddd;
+    z-index: 10; /* Garante que o cabeçalho fique sobre outros elementos */
 }

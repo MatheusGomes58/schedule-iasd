@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase/firebase';
+import { db } from '../../components/firebase/firebase';
 import './form.css';
 
-const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, departments }) => {
+const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments, events }) => {
     const [formError, setFormError] = useState('');
     const [isValidEvent, setIsValidEvent] = useState(true);
     const [formData, setFormData] = useState({
@@ -26,43 +26,19 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (initialData) {
-                    setFormData(initialData);
-                }
+        if (initialData) {
+            setFormData(initialData);
+        }
 
-                const leadersSnapshot = await db.collection('usePrivileges').get();
-                const leadersData = leadersSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setLeaders(leadersData);
+        const currentEmail = localStorage.getItem('currentEmail');
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            organizer: currentEmail || prevFormData.organizer,
+        }));
 
-                const currentEmail = localStorage.getItem('currentEmail');
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    organizer: currentEmail || prevFormData.organizer,
-                }));
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-
-        const unsubscribeLeaders = db.collection('usePrivileges').onSnapshot(snapshot => {
-            const leadersData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setLeaders(leadersData);
-        });
-
-        return () => {
-            unsubscribeLeaders();
-        };
-    }, [initialData]);
+        // Assume leaders are part of the userPrivileges object
+        setLeaders(userPrivileges.leaders || []);
+    }, [initialData, userPrivileges]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -78,40 +54,41 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
 
     const handleSave = async (e) => {
         e.preventDefault();
-
+    
         // Validação dos campos
         if (!formData.day || !formData.month || !formData.startTime || !formData.endTime || !formData.department || !formData.responsible || !formData.location || !formData.description) {
             setFormError('Por favor, preencha todos os campos obrigatórios.');
             setIsValidEvent(false);
             return;
         }
-
-        // Verificar se já existe um evento na mesma data
-        const eventsRef = db.collection('events');
-        const query = eventsRef.where('day', '==', formData.day);
-
-        const existingEvents = await query.get();
-
-        const isInvalid = existingEvents.docs.some(doc => {
-            const event = doc.data();
+    
+        // Obter o ano e o mês
+        const year = new Date().getFullYear(); // Ajuste se necessário
+        const monthKey = `${year}-${formData.month.padStart(2, '0')}`; // Formato "YYYY-MM"
+    
+        // Verificar se events e events.months existem
+        const eventsForMonth = (events && events.months && events.months[monthKey]) ? events.months[monthKey] : [];
+    
+        // Verificar sobreposição de eventos
+        const isInvalid = eventsForMonth.some(event => {
             const startTimeOverlap = (formData.startTime >= event.startTime && formData.startTime < event.endTime);
             const endTimeOverlap = (formData.endTime > event.startTime && formData.endTime <= event.endTime);
             const eventTimeOverLap = (formData.startTime < event.startTime && formData.endTime > event.endTime);
-
+    
             return startTimeOverlap || endTimeOverlap || eventTimeOverLap;
         });
-
+    
         if (isInvalid && !initialData) {
             setFormError('O horário selecionado conflita com outro evento.');
             setIsValidEvent(false);
             return;
         }
-
+    
         formData.isValid = !isInvalid;
         formData.active = false;
         setFormError('');
         onSave(formData);
-
+    
         // Resetar o formulário
         setFormData({
             day: '',
@@ -129,6 +106,9 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
             endDay: '',
         });
     };
+    
+    
+    
 
     const handleCancel = () => {
         onCancel();
@@ -168,7 +148,8 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                     id: doc.id,
                     ...doc.data()
                 }));
-                departments = updatedDepartments; // Atualiza a lista de departamentos no componente
+                // Atualiza a lista de departamentos no componente
+                departments = updatedDepartments;
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     newDepartment: ''
@@ -262,12 +243,12 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                         <select
                             id="department"
                             name="department"
-                            value={departament? departament : formData.department}
+                            value={departament ? departament : formData.department}
                             onChange={(e) => {
                                 handleChange(e);
                                 if (e.target.value === 'Outro') {
                                     setShowModal(true);
-                                }else{
+                                } else {
                                     setDepartament(e.target.value);
                                 }
                             }}
@@ -305,7 +286,7 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                             value={formData.location}
                             onChange={handleChange}
                             required
-                            placeholder="Local do evento"
+                            placeholder="Localização do evento"
                         />
                     </div>
 
@@ -318,35 +299,37 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                             onChange={handleChange}
                             required
                             placeholder="Descrição do evento"
-                        />
+                        ></textarea>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="organizer">Organizador<span className="required">*</span></label>
                         <input
-                            type="text"
+                            type="email"
                             id="organizer"
                             name="organizer"
-                            value={formData.organizer}
+                            value={userPrivileges.email}
                             onChange={handleChange}
                             required
                             placeholder="Email do organizador"
+                            readOnly
                         />
                     </div>
 
-                    <div className="form-group">
-                        <button type="submit" className="btn btn-primary">Salvar</button>
-                        <button type="button" className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
+                    <div className="form-actions">
+                        <button type="submit" className="save-button">Salvar</button>
+                        <button type="button" className="cancel-button" onClick={handleCancel}>Cancelar</button>
                     </div>
 
-                    {formError && <div className="form-error">{formError}</div>}
+                    {formError && <p className="error-message">{formError}</p>}
                 </form>
 
                 {showModal && (
-                    <div className="modal">
+                    <div className="modal-overlay">
                         <div className="modal-content">
-                            <h2>Adicionar Novo Departamento</h2>
                             <form onSubmit={handleAddDepartment}>
+                                <h2>Adicionar Novo Departamento</h2>
+
                                 <div className="form-group">
                                     <label htmlFor="newDepartment">Nome do Novo Departamento<span className="required">*</span></label>
                                     <input
@@ -359,9 +342,10 @@ const EventForm = ({ onSave, onCancel, admAcess, userPrivileges, initialData, de
                                         placeholder="Nome do departamento"
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <button type="submit" className="btn btn-primary">Adicionar</button>
-                                    <button type="button" className="btn btn-secondary" onClick={handleCancelAddDepartament}>Fechar</button>
+
+                                <div className="form-actions">
+                                    <button type="submit" className="save-button">Adicionar</button>
+                                    <button type="button" className="cancel-button" onClick={handleCancelAddDepartament}>Cancelar</button>
                                 </div>
                             </form>
                         </div>

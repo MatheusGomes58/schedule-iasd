@@ -60,19 +60,67 @@ export const getUserPrivileges = async (setUserPrivileges) => {
 export const getEventsFromFirestore = (setEvents) => {
     return db.collection('events').onSnapshot(snapshot => {
         const eventsData = {};
+
         snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            const day = String(data.day).padStart(2, '0'); // Garantir que day seja uma string
+            const month = data.month; // Assume que month já está no formato "YYYY-MM"
+
+            // Ajustar o mês (subtrair 1) e criar a data
+            const [year, monthNumber] = month.split('-');
+            const dateString = `${year}-${monthNumber}-${day}`;
+            const date = new Date(Date.parse(dateString));
+
+            // Subtrair 1 do mês para ajustar
+            date.setMonth(date.getMonth() - 1);
+
             const eventData = {
                 id: doc.id,
-                ...doc.data()
+                ...data,
+                date
             };
-            if (!eventsData[eventData.month]) {
-                eventsData[eventData.month] = [];
+
+            // Ajustar o formato para year e months
+            if (!eventsData[year]) {
+                eventsData[year] = {
+                    months: {}
+                };
             }
-            eventsData[eventData.month].push(eventData);
+
+            const monthKey = `${year}-${monthNumber}`;
+            if (!eventsData[year].months[monthKey]) {
+                eventsData[year].months[monthKey] = [];
+            }
+
+            eventsData[year].months[monthKey].push(eventData);
         });
-        setEvents(eventsData);
+
+        // Ordenar os eventos dentro de cada mês pela data completa
+        for (const year in eventsData) {
+            for (const monthKey in eventsData[year].months) {
+                eventsData[year].months[monthKey].sort((a, b) => a.date - b.date);
+            }
+        }
+
+        // Transformar o objeto eventsData em um formato final
+        const sortedEvents = Object.keys(eventsData).reduce((acc, year) => {
+            acc[year] = {
+                months: Object.keys(eventsData[year].months).sort().reduce((monthAcc, monthKey) => {
+                    monthAcc[monthKey] = eventsData[year].months[monthKey];
+                    return monthAcc;
+                }, {})
+            };
+            return acc;
+        }, {});
+
+        console.log(sortedEvents);
+
+        setEvents(sortedEvents);
     });
 };
+
+
+
 
 export const addDocumentTodb = async (collection, data) => {
     try {
