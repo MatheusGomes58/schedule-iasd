@@ -43,12 +43,9 @@ const EventTable = ({ events, userPrivileges, onDeleteEvent, onSendEvent, onEdit
     return (
         <div>
             {Object.keys(events).map(year => (
-                <div key={year}>
-                    <div className='yearHeader' data-year={year}>
-                        <h1 className='stickyYear'>{year}</h1>
-                    </div>
+                <div key={year} id={year}>
                     {Object.keys(events[year].months).map(monthKey => (
-                        <div key={monthKey}>
+                        <div key={monthKey} id={monthKey}>
                             <div className='monthBanner'>
                                 <h2>{formatMonthYear(monthKey)}</h2>
                             </div>

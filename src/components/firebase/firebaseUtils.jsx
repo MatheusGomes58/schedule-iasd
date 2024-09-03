@@ -119,7 +119,31 @@ export const getEventsFromFirestore = (setEvents) => {
     });
 };
 
-
+export const addDepartment = async (e, formData, setDepartament, departments, setFormData, setShowModal) => {
+    e.preventDefault();
+    if (formData.newDepartment.trim()) {
+        try {
+            await db.collection('departamento').add({ nome: formData.newDepartment });
+            console.log('Novo departamento adicionado');
+            // Atualizar lista de departamentos se necessário
+            setDepartament(formData.newDepartment);
+            const departamentosSnapshot = await db.collection('departamento').get();
+            const updatedDepartments = departamentosSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            // Atualiza a lista de departamentos no componente
+            departments = updatedDepartments;
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                newDepartment: ''
+            }));
+            setShowModal(false); // Fechar modal após adicionar
+        } catch (error) {
+            console.error('Erro ao adicionar departamento:', error);
+        }
+    }
+};
 
 
 export const addDocumentTodb = async (collection, data) => {

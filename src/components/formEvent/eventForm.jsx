@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../components/firebase/firebase';
 import './form.css';
 
-const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments, events }) => {
+const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments, events, addDepartment }) => {
     const [formError, setFormError] = useState('');
     const [isValidEvent, setIsValidEvent] = useState(true);
     const [formData, setFormData] = useState({
@@ -54,41 +53,41 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
 
     const handleSave = async (e) => {
         e.preventDefault();
-    
+
         // Validação dos campos
         if (!formData.day || !formData.month || !formData.startTime || !formData.endTime || !formData.department || !formData.responsible || !formData.location || !formData.description) {
             setFormError('Por favor, preencha todos os campos obrigatórios.');
             setIsValidEvent(false);
             return;
         }
-    
+
         // Obter o ano e o mês
         const year = new Date().getFullYear(); // Ajuste se necessário
         const monthKey = `${year}-${formData.month.padStart(2, '0')}`; // Formato "YYYY-MM"
-    
+
         // Verificar se events e events.months existem
         const eventsForMonth = (events && events.months && events.months[monthKey]) ? events.months[monthKey] : [];
-    
+
         // Verificar sobreposição de eventos
         const isInvalid = eventsForMonth.some(event => {
             const startTimeOverlap = (formData.startTime >= event.startTime && formData.startTime < event.endTime);
             const endTimeOverlap = (formData.endTime > event.startTime && formData.endTime <= event.endTime);
             const eventTimeOverLap = (formData.startTime < event.startTime && formData.endTime > event.endTime);
-    
+
             return startTimeOverlap || endTimeOverlap || eventTimeOverLap;
         });
-    
+
         if (isInvalid && !initialData) {
             setFormError('O horário selecionado conflita com outro evento.');
             setIsValidEvent(false);
             return;
         }
-    
+
         formData.isValid = !isInvalid;
         formData.active = false;
         setFormError('');
         onSave(formData);
-    
+
         // Resetar o formulário
         setFormData({
             day: '',
@@ -105,10 +104,8 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
             active: '',
             endDay: '',
         });
+        setDepartament('');
     };
-    
-    
-    
 
     const handleCancel = () => {
         onCancel();
@@ -128,37 +125,31 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
             active: '',
             endDay: '',
         });
+        setDepartament('');
+    };
+
+    const handleAddDepartment = async (e) => {
+        e.preventDefault();
+        const newDepartment = formData.newDepartment.trim();
+
+        if (!newDepartment) {
+            return;
+        }
+
+        try {
+            await addDepartment(e, formData, setDepartament, departments, setFormData, setShowModal);
+        } catch (error) {
+            console.error('Erro ao adicionar departamento:', error);
+        }
     };
 
     const handleCancelAddDepartament = () => {
         setShowModal(false);
-        setDepartament('Selecione um departamento');
-    }
-
-    const handleAddDepartment = async (e) => {
-        e.preventDefault();
-        if (formData.newDepartment.trim()) {
-            try {
-                await db.collection('departamento').add({ nome: formData.newDepartment });
-                console.log('Novo departamento adicionado');
-                // Atualizar lista de departamentos se necessário
-                setDepartament(formData.newDepartment);
-                const departamentosSnapshot = await db.collection('departamento').get();
-                const updatedDepartments = departamentosSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                // Atualiza a lista de departamentos no componente
-                departments = updatedDepartments;
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    newDepartment: ''
-                }));
-                setShowModal(false); // Fechar modal após adicionar
-            } catch (error) {
-                console.error('Erro ao adicionar departamento:', error);
-            }
-        }
+        setDepartament('');
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            newDepartment: ''
+        }));
     };
 
     return (
@@ -303,49 +294,48 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="organizer">Organizador<span className="required">*</span></label>
+                        <label htmlFor="organizer">Organizador</label>
                         <input
                             type="email"
                             id="organizer"
                             name="organizer"
-                            value={userPrivileges.email}
+                            value={formData.organizer}
                             onChange={handleChange}
-                            required
                             placeholder="Email do organizador"
-                            readOnly
+                            disabled
                         />
                     </div>
 
-                    <div className="form-actions">
-                        <button type="submit" className="save-button">Salvar</button>
-                        <button type="button" className="cancel-button" onClick={handleCancel}>Cancelar</button>
+                    <div className="form-group">
+                        <button type="submit">Salvar</button>
+                        <button type="button" onClick={handleCancel}>Cancelar</button>
                     </div>
 
-                    {formError && <p className="error-message">{formError}</p>}
+                    {formError && <p className="form-error">{formError}</p>}
                 </form>
 
                 {showModal && (
                     <div className="modal-overlay">
                         <div className="modal-content">
+                            <h2>Adicionar Novo Departamento</h2>
                             <form onSubmit={handleAddDepartment}>
-                                <h2>Adicionar Novo Departamento</h2>
-
                                 <div className="form-group">
-                                    <label htmlFor="newDepartment">Nome do Novo Departamento<span className="required">*</span></label>
+                                    <label htmlFor="newDepartment">Novo Departamento</label>
                                     <input
                                         type="text"
                                         id="newDepartment"
                                         name="newDepartment"
                                         value={formData.newDepartment}
-                                        onChange={handleChange}
+                                        onChange={(e) => setFormData(prevFormData => ({
+                                            ...prevFormData,
+                                            newDepartment: e.target.value
+                                        }))}
                                         required
-                                        placeholder="Nome do departamento"
                                     />
                                 </div>
-
-                                <div className="form-actions">
-                                    <button type="submit" className="save-button">Adicionar</button>
-                                    <button type="button" className="cancel-button" onClick={handleCancelAddDepartament}>Cancelar</button>
+                                <div className="form-group">
+                                    <button type="submit">Adicionar</button>
+                                    <button type="button" onClick={handleCancelAddDepartament}>Cancelar</button>
                                 </div>
                             </form>
                         </div>

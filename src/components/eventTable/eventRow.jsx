@@ -40,21 +40,21 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
             });
         }
 
-        if ((setUserPrivileges.adm || (setUserPrivileges.valid && !event.active)) &&
-            !setUserPrivileges.edit) {
-            switches.push({
-                label: event.isValid ? 'Sem Conflitos' : 'Com Conflitos',
-                status: event.isValid,
-                onToggle: () => handleToggle('isValid')
-            });
-        }
-
         if ((setUserPrivileges.adm || (setUserPrivileges.sended && !event.active)) &&
             !setUserPrivileges.edit) {
             switches.push({
                 label: event.sended ? 'Enviado' : 'Pendente',
                 status: event.sended,
                 onToggle: () => handleToggle('sended')
+            });
+        }
+
+        if ((setUserPrivileges.adm || (setUserPrivileges.valid && !event.active)) &&
+            !setUserPrivileges.edit) {
+            switches.push({
+                label: event.isValid ? 'Sem Conflitos' : 'Com Conflitos',
+                status: event.isValid,
+                onToggle: () => handleToggle('isValid')
             });
         }
 
@@ -86,9 +86,9 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
         }
     
         // Adiciona o botão de deletar se o evento não estiver aprovado
-        if ((event.active || event.sended ) && (event.organizer === user.email || setUserPrivileges.adm)) {
+        if ((event.active || event.sended)  && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
-                <button key="cancel" className='button button-cancel' onClick={() => handleToggle('sended')}>
+                <button key="cancel" className='button button-cancel' onClick={() => handleToggle(event.active? 'active': 'sended')}>
                     <FaTimes /> Cancelar
                 </button>
             );

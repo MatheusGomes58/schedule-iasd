@@ -23,7 +23,6 @@ tr:hover td {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-
 th {
     background-color: #173f74;
     color: white;
@@ -32,14 +31,6 @@ th {
 
 td {
     background-color: transparent;
-}
-
-tr {
-    background-color: white;
-}
-
-tr:hover td {
-    background-color: rgba(0, 0, 0, 0.05);
 }
 
 @media screen and (max-width: 768px) {
@@ -54,7 +45,22 @@ tr:hover td {
     th,
     td {
         display: block;
+        width: 100vw;
+    }
+
+    tr {
+        display: block;
+        margin-bottom: 10px;
+        border: 1px solid #00000023; /* Adicione uma borda ao redor de cada linha */
+        width: 100vw;
+    }
+
+    th,
+    td {
+        box-sizing: border-box;
         width: 100%;
+        text-align: left;
+        display: block; /* Cada célula ocupará toda a largura da linha */
     }
 
     th {
@@ -65,19 +71,4 @@ tr:hover td {
         text-align: center;
         padding: 10px 5px;
     }
-}
-
-/* Defina a altura do cabeçalho para não sobrepor o conteúdo */
-.yearHeader {
-    position: relative;
-}
-
-.stickyYear {
-    position: sticky;
-    top: 0;
-    background-color: #f0f0f0;
-    padding: 10px;
-    font-size: 24px;
-    border-bottom: 2px solid #ddd;
-    z-index: 10; /* Garante que o cabeçalho fique sobre outros elementos */
 }

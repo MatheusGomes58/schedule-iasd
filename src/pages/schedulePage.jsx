@@ -13,7 +13,8 @@ import {
   deleteDocumentFromdb,
   updateEventField,
   logoutFromFirebase,
-  getDepartmentsFromFirestore
+  getDepartmentsFromFirestore,
+  addDepartment
 } from '../components/firebase/firebaseUtils';
 import { FaPlus, FaSearch, FaPrint, FaSignOutAlt } from 'react-icons/fa';
 
@@ -153,6 +154,7 @@ const SchedulePage = () => {
             departments={departments}
             initialData={selectedEvent}
             eventsRef={events}
+            addDepartment={addDepartment}
           />
         </div>
       )}
