@@ -22,6 +22,7 @@ export const getDepartmentsFromFirestore = async (setDepartments) => {
 };
 
 export const getUserPrivileges = async (setUserPrivileges) => {
+    var newUserPrivilegesData;
     try {
         const user = auth.currentUser;
 
@@ -37,7 +38,7 @@ export const getUserPrivileges = async (setUserPrivileges) => {
                 const userPrivilegesData = userPrivilegesSnapshot.docs[0].data();
                 setUserPrivileges(userPrivilegesData);
             } else {
-                const newUserPrivilegesData = {
+                newUserPrivilegesData = {
                     email: userEmail,
                     acess: false,
                     adm: false,
@@ -46,13 +47,23 @@ export const getUserPrivileges = async (setUserPrivileges) => {
                     aprovation: false,
                 };
                 await addDoc(collection(db, 'usePrivileges'), newUserPrivilegesData);
-                setUserPrivileges(newUserPrivilegesData);
             }
         } else {
-            console.error('Nenhum usuário autenticado encontrado.');
+            console.log('Nenhum usuário autenticado encontrado.');
         }
     } catch (error) {
         console.error('Erro ao buscar ou cadastrar privilégios do usuário:', error);
+    }
+
+    setUserPrivileges(newUserPrivilegesData)
+};
+
+export const getUser = async (user) => {
+    try {
+        user = auth.currentUser;
+    } catch (error) {
+        console.error('Nenhum usuário autenticado encontrado.');
+        user = false;
     }
 };
 
@@ -112,8 +123,6 @@ export const getEventsFromFirestore = (setEvents) => {
             };
             return acc;
         }, {});
-
-        console.log(sortedEvents);
 
         setEvents(sortedEvents);
     });

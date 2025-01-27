@@ -12,7 +12,7 @@ const formatMonthYear = (yearMonthKey) => {
     return `${months[parseInt(month, 10) - 1]} de ${year}`;
 };
 
-const EventTable = ({ events, userPrivileges, onDeleteEvent, onSendEvent, onEditEvent, updateEventField, setUserPrivileges }) => {
+const EventTable = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEventField, setUserPrivileges }) => {
     const [currentYear, setCurrentYear] = useState(null);
 
     const handleUpdateEventField = (eventId, field, value) => {
@@ -58,8 +58,10 @@ const EventTable = ({ events, userPrivileges, onDeleteEvent, onSendEvent, onEdit
                                         <th>Responsável</th>
                                         <th>Descrição</th>
                                         <th>Local</th>
-                                        <th className='printable-content'>Status do evento</th>
-                                        <th className='printable-content'>Ações</th>
+                                        {setUserPrivileges && (
+                                            <th className='printable-content'>Status do evento</th> &&
+                                            <th className='printable-content'>Ações</th>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,7 +69,6 @@ const EventTable = ({ events, userPrivileges, onDeleteEvent, onSendEvent, onEdit
                                         <EventRow
                                             key={event.id}
                                             event={event}
-                                            userPrivileges={userPrivileges}
                                             onDeleteEvent={onDeleteEvent}
                                             onSendEvent={onSendEvent}
                                             onEditEvent={onEditEvent}

@@ -1,9 +1,14 @@
 /* Adicione essas classes ao seu arquivo CSS existente */
-
 .google-search-bar {
     display: flex;
     justify-content: center;
     padding: 16px;
+    position: fixed; /* Torna o elemento flutuante */
+    bottom: 60px; /* Ajusta a distância em relação ao footer */
+    left: 50%; /* Posiciona o elemento no centro horizontal */
+    transform: translateX(-50%); /* Garante o alinhamento central */
+    z-index: 1000; /* Garante que fique acima do conteúdo */
+    background-color: transparent; /* Remove fundo para destacar somente o container */
 }
 
 .search-container {
@@ -15,8 +20,8 @@
     padding: 8px;
     width: 400px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
-    /* Adiciona uma sombra suave */
 }
+
 
 .search-icon {
     color: #70757a;

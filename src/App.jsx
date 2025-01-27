@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/loginPage';
 import SchedulePage from './pages/schedulePage';
 import AuthProvider from './components/firebase/authProvider';
@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        {({ user, handleLogin }) => (
+        {({ user, handleLogin, userPrivileges }) => (
           <Routes>
             <Route
               path="/"
@@ -16,7 +16,7 @@ function App() {
             />
             <Route
               path="/schedulepage"
-              element={user ? <SchedulePage /> : <Navigate to="/" />}
+              element={<SchedulePage user={user} sendUserPrivileges={userPrivileges} />}
             />
           </Routes>
         )}

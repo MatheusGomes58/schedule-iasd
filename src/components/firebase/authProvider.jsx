@@ -3,23 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from './auth';
 import { app } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { getUserPrivileges } from './firebaseUtils';
 
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [userPrivileges, setUserPrivileges] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Subscribing to authentication state changes
-        const unsubscribe = onAuthStateChanged(app.auth(), (user) => {
+        const unsubscribe = onAuthStateChanged(app.auth(), async (user) => {
             setUser(user);
             if (user) {
-                navigate('/schedulepage');
+                getUserPrivileges(setUserPrivileges);
             }
         });
-
-        // Cleanup subscription on unmount
+    
         return () => unsubscribe();
-    }, [navigate]);
+    }, []);
 
     const handleLogin = async (email, password) => {
         try {
@@ -31,7 +31,7 @@ function AuthProvider({ children }) {
 
     return (
         <>
-            {children({ user, handleLogin })}
+            {children({ user, handleLogin, userPrivileges })}
         </>
     );
 }

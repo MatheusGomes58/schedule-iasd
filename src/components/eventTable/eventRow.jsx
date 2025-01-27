@@ -75,7 +75,7 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
 
     const getEventActionButtons = (event, user) => {
         const buttons = [];
-    
+
         // Adiciona o botão de editar se o evento não estiver aprovado ou se o usuário for administrador
         if ((!event.active && !event.sended) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
@@ -84,22 +84,22 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
                 </button>
             );
         }
-    
+
         // Adiciona o botão de deletar se o evento não estiver aprovado
-        if ((event.active || event.sended)  && (event.organizer === user.email || setUserPrivileges.adm)) {
+        if ((event.active || event.sended) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
-                <button key="cancel" className='button button-cancel' onClick={() => handleToggle(event.active? 'active': 'sended')}>
+                <button key="cancel" className='button button-cancel' onClick={() => handleToggle(event.active ? 'active' : 'sended')}>
                     <FaTimes /> Cancelar
                 </button>
             );
-        } else if (event.organizer === user.email || setUserPrivileges.adm){
+        } else if (event.organizer === user.email || setUserPrivileges.adm) {
             buttons.push(
                 <button key="delete" className='button button-delete' onClick={() => onDeleteEvent(event.id)}>
                     <FaTrash /> Deletar
                 </button>
             );
         }
-    
+
         // Adiciona o botão de enviar se o evento estiver aprovado e ainda não tiver sido enviado
         if ((!event.active && !event.sended) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
@@ -108,24 +108,26 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
                 </button>
             );
         }
-    
+
         return buttons;
     };
 
     return (
         <tr id={event.id} className={handleClassName(event)}>
-            <td>{event.day}{event.endDay?' - '+event.endDay:''}</td>
+            <td>{event.day}{event.endDay ? ' - ' + event.endDay : ''}</td>
             <td>{event.startTime} - {event.endTime}</td>
             <td>{event.department}</td>
             <td>{event.responsible}</td>
             <td>{event.description}</td>
             <td>{event.location}</td>
-            <td className='printable-content'>
-                {rendererStatus(event, setUserPrivileges)}
-            </td>
-            <td className='printable-content'>
-                {getEventActionButtons(event, setUserPrivileges)}
-            </td>
+            {setUserPrivileges && (
+                <td className='printable-content'>
+                    {rendererStatus(event, setUserPrivileges)}
+                </td> &&
+                <td className='printable-content'>
+                    {getEventActionButtons(event, setUserPrivileges)}
+                </td>
+            )}
         </tr>
     );
 };
