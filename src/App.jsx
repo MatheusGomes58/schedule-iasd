@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        {({ user, handleLogin, userPrivileges }) => (
+        {({ user, handleLogin }) => (
           <Routes>
             <Route
               path="/"
@@ -16,7 +16,7 @@ function App() {
             />
             <Route
               path="/schedulepage"
-              element={<SchedulePage user={user} sendUserPrivileges={userPrivileges} />}
+              element={<SchedulePage user={user} />}
             />
           </Routes>
         )}

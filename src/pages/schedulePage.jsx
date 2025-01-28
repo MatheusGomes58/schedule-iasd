@@ -4,7 +4,6 @@ import EventTable from "../components/eventTable/eventTable";
 import EventForm from "../components/formEvent/eventForm";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal";
 import SearchBar from "../components/searchBar/searchBar";
-import { auth } from '../components/firebase/firebase';
 import "../assets/css/schedulePage.css";
 import {
   getUserPrivileges,
@@ -25,7 +24,7 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 
-const SchedulePage = ({ sendUserPrivileges }) => {
+const SchedulePage = ({ user }) => {
   const [events, setEvents] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [searchBarVisible, setSearchBarVisible] = useState(false);
@@ -42,11 +41,11 @@ const SchedulePage = ({ sendUserPrivileges }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setUserPrivileges(sendUserPrivileges);
-    const unsubscribeEvents = getEventsFromFirestore(setEvents);
+    getUserPrivileges(setUserPrivileges);
+    getEventsFromFirestore(setEvents);
     getDepartmentsFromFirestore(setDepartments);
   }, []);
-  
+
 
   const handleConfirm = async () => {
     if (confirmationAction && eventToConfirm) {
@@ -109,10 +108,15 @@ const SchedulePage = ({ sendUserPrivileges }) => {
   };
 
   const handleLogout = async () => {
-    if(userPrivileges){
+    if (userPrivileges) {
       await logoutFromFirebase();
     }
     navigate("/");
+  };
+
+  const setCancel = () => {
+    setSearchTerm("");
+    setSearchBarVisible(false);
   };
 
   return (
@@ -129,9 +133,11 @@ const SchedulePage = ({ sendUserPrivileges }) => {
         >
           <FaSearch /> Search
         </button>
-        <button className="menu-button" onClick={handlePrint}>
-          <FaPrint /> Print
-        </button>
+        {userPrivileges && (
+          <button className="menu-button" onClick={handlePrint}>
+            <FaPrint /> Print
+          </button>
+        )}
         <button className="menu-button" onClick={handleLogout}>
           {userPrivileges ? <FaSignOutAlt /> : <FaSignInAlt />}
           {userPrivileges ? "Logout" : "Login"}
@@ -149,6 +155,7 @@ const SchedulePage = ({ sendUserPrivileges }) => {
         }}
         updateEventField={handleUpdateEventField}
         setUserPrivileges={userPrivileges}
+        searchTerm={searchTerm}
       />
 
       {confirmationModalVisible && (
@@ -162,7 +169,7 @@ const SchedulePage = ({ sendUserPrivileges }) => {
       {searchBarVisible && (
         <SearchBar
           onSearch={(term) => setSearchTerm(term)}
-          onCancel={() => setSearchBarVisible(false)}
+          onCancel={() => setCancel()}
           suggestions={departments}
         />
       )}

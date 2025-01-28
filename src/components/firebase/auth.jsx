@@ -2,11 +2,7 @@ import { app } from './firebase';
 
 async function signInWithEmailAndPassword(email, password) {
   try {
-    const userCredential = await app.auth().signInWithEmailAndPassword(email, password);
-
-    if (userCredential) {
-      window.location.href = "./schedulepage";
-    }
+    await app.auth().signInWithEmailAndPassword(email, password);
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;

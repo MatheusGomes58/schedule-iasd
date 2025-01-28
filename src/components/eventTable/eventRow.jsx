@@ -123,7 +123,8 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
             {setUserPrivileges && (
                 <td className='printable-content'>
                     {rendererStatus(event, setUserPrivileges)}
-                </td> &&
+                </td>
+            )} {setUserPrivileges && (
                 <td className='printable-content'>
                     {getEventActionButtons(event, setUserPrivileges)}
                 </td>

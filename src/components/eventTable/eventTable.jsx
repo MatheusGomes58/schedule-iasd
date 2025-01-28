@@ -12,8 +12,70 @@ const formatMonthYear = (yearMonthKey) => {
     return `${months[parseInt(month, 10) - 1]} de ${year}`;
 };
 
-const EventTable = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEventField, setUserPrivileges }) => {
+const EventTable = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEventField, setUserPrivileges, searchTerm }) => {
     const [currentYear, setCurrentYear] = useState(null);
+    const [filteredEvents, setFilteredEvents] = useState(events);
+
+    // Atualiza os eventos filtrados com base nos privilégios e na busca
+    useEffect(() => {
+        if (searchTerm === "") {
+            // Se o `searchTerm` estiver vazio, exibe os eventos filtrados apenas pelos privilégios
+            let filtered = {};
+
+            Object.keys(events).forEach(year => {
+                const months = events[year].months;
+                const filteredMonths = {};
+
+                Object.keys(months).forEach(monthKey => {
+                    const activeEvents = months[monthKey].filter(event => {
+                        return setUserPrivileges !== null || event.active === true;
+                    });
+
+                    if (activeEvents.length > 0) {
+                        filteredMonths[monthKey] = activeEvents;
+                    }
+                });
+
+                if (Object.keys(filteredMonths).length > 0) {
+                    filtered[year] = { months: filteredMonths };
+                }
+            });
+
+            setFilteredEvents(filtered);
+        } else {
+            // Caso contrário, filtra pelos privilégios e pelo termo de busca
+            let filtered = {};
+
+            Object.keys(events).forEach(year => {
+                const months = events[year].months;
+                const filteredMonths = {};
+
+                Object.keys(months).forEach(monthKey => {
+                    const activeEvents = months[monthKey].filter(event => {
+                        const isActive = setUserPrivileges !== null || event.active === true;
+
+                        // Busca nos atributos do evento usando o searchTerm
+                        const matchesSearch = event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            event.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            event.responsible?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            event.location?.toLowerCase().includes(searchTerm.toLowerCase());
+
+                        return isActive && matchesSearch;
+                    });
+
+                    if (activeEvents.length > 0) {
+                        filteredMonths[monthKey] = activeEvents;
+                    }
+                });
+
+                if (Object.keys(filteredMonths).length > 0) {
+                    filtered[year] = { months: filteredMonths };
+                }
+            });
+
+            setFilteredEvents(filtered);
+        }
+    }, [setUserPrivileges, events, searchTerm]);
 
     const handleUpdateEventField = (eventId, field, value) => {
         updateEventField(eventId, field, value);
@@ -42,9 +104,9 @@ const EventTable = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEve
 
     return (
         <div>
-            {Object.keys(events).map(year => (
+            {Object.keys(filteredEvents).map(year => (
                 <div key={year} id={year}>
-                    {Object.keys(events[year].months).map(monthKey => (
+                    {Object.keys(filteredEvents[year].months).map(monthKey => (
                         <div key={monthKey} id={monthKey}>
                             <div className='monthBanner'>
                                 <h2>{formatMonthYear(monthKey)}</h2>
@@ -59,13 +121,14 @@ const EventTable = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEve
                                         <th>Descrição</th>
                                         <th>Local</th>
                                         {setUserPrivileges && (
-                                            <th className='printable-content'>Status do evento</th> &&
+                                            <th className='printable-content'>Status do evento</th>
+                                        )} {setUserPrivileges && (
                                             <th className='printable-content'>Ações</th>
                                         )}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {events[year].months[monthKey].map(event => (
+                                    {filteredEvents[year].months[monthKey].map(event => (
                                         <EventRow
                                             key={event.id}
                                             event={event}

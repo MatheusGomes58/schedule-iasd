@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../assets/css/loginPage.css';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from '../components/firebase/auth';
 import logo from '../assets/img/logo.png';
@@ -9,6 +10,7 @@ function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const navigate = useNavigate();
 
   const isButtonDisabled = !username.trim() || !password.trim() || loading;
 
@@ -20,6 +22,7 @@ function LoginPage() {
       setError(error.message);
     } finally {
       setLoading(false);
+      navigate("/schedulepage");
     }
   };
 
