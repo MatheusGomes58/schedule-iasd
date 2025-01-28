@@ -4,13 +4,13 @@ import 'firebase/compat/firestore';
 
 // Configuração do Firebase
 const firebaseConfig1 = {
-  apiKey: "AIzaSyCTKMVCS-bq6ATJq76NfPML5QWR-6aUh2A",
-  authDomain: "mmschedule-431da.firebaseapp.com",
-  projectId: "mmschedule-431da",
-  storageBucket: "mmschedule-431da.appspot.com",
-  messagingSenderId: "1046379446876",
-  appId: "1:1046379446876:web:89777debf84fae6c055c99",
-  measurementId: "G-L16XNRX91L"
+  apiKey: "AIzaSyDt-XqkxkS_hEkMWRpHPzc3RtTy-wSqYmE",
+  authDomain: "agendaregiao5-fd149.firebaseapp.com",
+  projectId: "agendaregiao5-fd149",
+  storageBucket: "agendaregiao5-fd149.firebasestorage.app",
+  messagingSenderId: "179407923159",
+  appId: "1:179407923159:web:fa038d17434892579f4d92",
+  measurementId: "G-Y595JM4YBS"
 };
 
 // Inicializa o aplicativo Firebase
