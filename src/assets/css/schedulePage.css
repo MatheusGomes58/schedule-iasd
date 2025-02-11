@@ -75,6 +75,14 @@
     gap: 5px;
 }
 
+.menu-button.false {
+    color: grey;
+}
+
+.menu-button.false:hover {
+    color: grey;
+}
+
 .menu-button:hover {
     color: #007bff;
     /* Cor do texto ao passar o mouse */

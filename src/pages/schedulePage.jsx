@@ -31,7 +31,7 @@ const SchedulePage = ({ user }) => {
   const [events, setEvents] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [searchBarVisible, setSearchBarVisible] = useState(false);
-  const [calendarSwitch, setCalendarSwitch] = useState(false);
+  const [calendarSwitch, setCalendarSwitch] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editing, setEditing] = useState(false);
   const [userPrivileges, setUserPrivileges] = useState(null);
@@ -127,6 +127,11 @@ const SchedulePage = ({ user }) => {
     setSearchBarVisible(false);
   };
 
+  const onSetSearch = () => {
+    setSearchBarVisible(!searchBarVisible);
+    setCalendarSwitch(calendarSwitch?!calendarSwitch:calendarSwitch);
+  };
+
   return (
     <div className="schedule-page">
       <div className="menu printable-content">
@@ -137,7 +142,7 @@ const SchedulePage = ({ user }) => {
         )}
         <button
           className="menu-button"
-          onClick={() => setSearchBarVisible(!searchBarVisible)}
+          onClick={onSetSearch}
         >
           <FaSearch /> Search
         </button>
@@ -150,7 +155,7 @@ const SchedulePage = ({ user }) => {
           {userPrivileges ? <FaSignOutAlt /> : <FaSignInAlt />}
           {userPrivileges ? "Logout" : "Login"}
         </button>
-        <button className="menu-button" onClick={handleSwitchSchedule}>
+        <button className={"menu-button " + !searchBarVisible} onClick={handleSwitchSchedule} disabled={searchBarVisible}>
           {calendarSwitch ? <FaListAlt /> :<FaCalendarAlt />}
           {calendarSwitch ? "Lista" : "Calendário"}
         </button>
