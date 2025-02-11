@@ -151,24 +151,14 @@ const SchedulePage = ({ user }) => {
           {userPrivileges ? "Logout" : "Login"}
         </button>
         <button className="menu-button" onClick={handleSwitchSchedule}>
-          {calendarSwitch ? <FaCalendarAlt /> : <FaListAlt />}
-          {calendarSwitch ? "Calendário" : "Lista"}
+          {calendarSwitch ? <FaListAlt /> :<FaCalendarAlt />}
+          {calendarSwitch ? "Lista" : "Calendário"}
         </button>
       </div>
 
       {calendarSwitch? 
         <Calendar 
           events={events} 
-          onDeleteEvent={handleDeleteEvent}
-          onSendEvent={handleSendEvent}
-          onEditEvent={(event) => {
-            setEditing(true);
-            setSelectedEvent(event);
-            setShowForm(true);
-          }}
-          updateEventField={handleUpdateEventField}
-          setUserPrivileges={userPrivileges}
-          searchTerm={searchTerm}
         />: 
         <EventTable
           events={events}
