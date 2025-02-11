@@ -15,7 +15,7 @@ function App() {
               element={<LoginPage onLogin={handleLogin} />}
             />
             <Route
-              path="/schedulepage"
+              path="/schedule"
               element={<SchedulePage user={user} />}
             />
           </Routes>

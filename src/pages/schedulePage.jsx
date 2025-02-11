@@ -4,6 +4,7 @@ import EventTable from "../components/eventTable/eventTable";
 import EventForm from "../components/formEvent/eventForm";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal";
 import SearchBar from "../components/searchBar/searchBar";
+import Calendar from "../components/calendarGrid/calendarGrid";
 import "../assets/css/schedulePage.css";
 import {
   getUserPrivileges,
@@ -22,12 +23,15 @@ import {
   FaPrint,
   FaSignOutAlt,
   FaSignInAlt,
+  FaCalendarAlt,
+  FaListAlt
 } from "react-icons/fa";
 
 const SchedulePage = ({ user }) => {
   const [events, setEvents] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [searchBarVisible, setSearchBarVisible] = useState(false);
+  const [calendarSwitch, setCalendarSwitch] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editing, setEditing] = useState(false);
   const [userPrivileges, setUserPrivileges] = useState(null);
@@ -114,6 +118,10 @@ const SchedulePage = ({ user }) => {
     navigate("/");
   };
 
+  const handleSwitchSchedule = async () => {
+    setCalendarSwitch(!calendarSwitch)
+  };
+
   const setCancel = () => {
     setSearchTerm("");
     setSearchBarVisible(false);
@@ -142,22 +150,39 @@ const SchedulePage = ({ user }) => {
           {userPrivileges ? <FaSignOutAlt /> : <FaSignInAlt />}
           {userPrivileges ? "Logout" : "Login"}
         </button>
+        <button className="menu-button" onClick={handleSwitchSchedule}>
+          {calendarSwitch ? <FaCalendarAlt /> : <FaListAlt />}
+          {calendarSwitch ? "Calendário" : "Lista"}
+        </button>
       </div>
 
-      <EventTable
-        events={events}
-        onDeleteEvent={handleDeleteEvent}
-        onSendEvent={handleSendEvent}
-        onEditEvent={(event) => {
-          setEditing(true);
-          setSelectedEvent(event);
-          setShowForm(true);
-        }}
-        updateEventField={handleUpdateEventField}
-        setUserPrivileges={userPrivileges}
-        searchTerm={searchTerm}
-      />
-
+      {calendarSwitch? 
+        <Calendar 
+          events={events} 
+          onDeleteEvent={handleDeleteEvent}
+          onSendEvent={handleSendEvent}
+          onEditEvent={(event) => {
+            setEditing(true);
+            setSelectedEvent(event);
+            setShowForm(true);
+          }}
+          updateEventField={handleUpdateEventField}
+          setUserPrivileges={userPrivileges}
+          searchTerm={searchTerm}
+        />: 
+        <EventTable
+          events={events}
+          onDeleteEvent={handleDeleteEvent}
+          onSendEvent={handleSendEvent}
+          onEditEvent={(event) => {
+            setEditing(true);
+            setSelectedEvent(event);
+            setShowForm(true);
+          }}
+          updateEventField={handleUpdateEventField}
+          setUserPrivileges={userPrivileges}
+          searchTerm={searchTerm}
+      />}
       {confirmationModalVisible && (
         <ConfirmationModal
           message={confirmationMessage}
