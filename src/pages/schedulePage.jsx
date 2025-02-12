@@ -115,7 +115,7 @@ const SchedulePage = ({ user }) => {
     if (userPrivileges) {
       await logoutFromFirebase();
     }
-    navigate("/");
+    navigate("/login");
   };
 
   const handleSwitchSchedule = async () => {

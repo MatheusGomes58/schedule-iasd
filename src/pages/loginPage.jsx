@@ -22,7 +22,7 @@ function LoginPage() {
       setError(error.message);
     } finally {
       setLoading(false);
-      navigate("/schedulepage");
+      navigate("/");
     }
   };
 

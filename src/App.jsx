@@ -11,11 +11,11 @@ function App() {
         {({ user, handleLogin }) => (
           <Routes>
             <Route
-              path="/"
+              path="/login"
               element={<LoginPage onLogin={handleLogin} />}
             />
             <Route
-              path="/schedulepage"
+              path="/"
               element={<SchedulePage user={user} />}
             />
           </Routes>
