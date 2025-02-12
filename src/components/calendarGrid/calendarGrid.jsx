@@ -64,6 +64,19 @@ const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEvent
     }
   };
 
+
+  const handleClassName = (event) => {
+    let className = "";
+    if (event.active && event.isValid && event.sended) {
+        className = 'sended-event';
+    } else if (event.active && event.isValid && !event.sended) {
+        className = 'inactive-event';
+    } else if (event.active && !event.isValid) {
+        className = 'invalid-event';
+    }
+    return className;
+}
+
   return (
     <div>
       <div className="monthBanner">
@@ -101,7 +114,7 @@ const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEvent
                   <span>{format(day, "d")}</span>
                   {dayEvents.length > 0 &&
                     dayEvents.map((event, index) => (
-                      <div key={index} className="event">{event.title}</div>
+                      <div key={index} className={"event " + handleClassName(event)}>{event.title}</div>
                     ))}
                 </div>
               );

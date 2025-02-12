@@ -53,6 +53,15 @@
   background: #f9f9f9;
 }
 
+.event {
+  color: black;
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 5px;
+  margin-top: 5px;
+  text-align: center;
+}
+
 /* Botões flutuantes */
 .nav-buttons {
   position: fixed;
@@ -140,6 +149,16 @@
       content: "●";
       font-size: 14px;
       color: #173f74;
+  }
+
+  .sended-event{
+    background-color: green;
+  }
+  .inactive-event{
+    background-color: orange;
+  }
+  .invalid-event{
+    background-color: red;
   }
 }
 
