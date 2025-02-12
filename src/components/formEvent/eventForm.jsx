@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './form.css';
 
-const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments, events, addDepartment }) => {
+const EventForm = ({ onSave, editing, onCancel, userPrivileges, initialData, departments, events, addDepartment }) => {
     const [formError, setFormError] = useState('');
     const [isValidEvent, setIsValidEvent] = useState(true);
     const [formData, setFormData] = useState({
+        title: '',
         day: '',
         month: '',
         startTime: '',
@@ -20,7 +21,6 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
         endDay: '',
     });
     const [departament, setDepartament] = useState('');
-    const [leaders, setLeaders] = useState([]);
     const [showEndDate, setShowEndDate] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
@@ -34,9 +34,6 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
             ...prevFormData,
             organizer: currentEmail || prevFormData.organizer,
         }));
-
-        // Assume leaders are part of the userPrivileges object
-        setLeaders(userPrivileges.leaders || []);
     }, [initialData, userPrivileges]);
 
     const handleChange = (e) => {
@@ -90,6 +87,7 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
 
         // Resetar o formulário
         setFormData({
+            title: '',
             day: '',
             month: '',
             startTime: '',
@@ -111,6 +109,7 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
         onCancel();
         setFormError('');
         setFormData({
+            title: '',
             day: '',
             month: '',
             startTime: '',
@@ -156,118 +155,140 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
         <div className="modal-overlay">
             <div className="modal-content">
                 <form className="event-form" onSubmit={handleSave}>
-                    <h2>Adicionar Novo Evento</h2>
-
-                    <div className="form-group">
-                        <label htmlFor="day">Dia Inicial<span className="required">*</span></label>
-                        <input
-                            type="number"
-                            id="day"
-                            name="day"
-                            value={formData.day}
-                            onChange={handleChange}
-                            required
-                            min="1"
-                            max="31"
-                            placeholder="Ex: 15"
-                        />
-                    </div>
-
-                    {showEndDate && (
+                    <input
+                        className="titleInput"
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                        placeholder="Insira o Titulo do Evento"
+                        disabled={!editing}
+                    />
+                    <div className='form-group-row'>
                         <div className="form-group">
-                            <label htmlFor="endDay">Dia Final (opcional)</label>
+                            <label htmlFor="day">Dia Inicial<span className="required">*</span></label>
                             <input
                                 type="number"
-                                id="endDay"
-                                name="endDay"
-                                value={formData.endDay}
+                                id="day"
+                                name="day"
+                                value={formData.day}
                                 onChange={handleChange}
+                                required
                                 min="1"
                                 max="31"
-                                placeholder="Ex: 16"
+                                placeholder="Ex: 15"
+                                disabled={!editing}
                             />
                         </div>
-                    )}
 
+                        {showEndDate && (
+                            <div className="form-group">
+                                <label htmlFor="endDay">Dia Final</label>
+                                <input
+                                    type="number"
+                                    id="endDay"
+                                    name="endDay"
+                                    value={formData.endDay}
+                                    onChange={handleChange}
+                                    min="1"
+                                    max="31"
+                                    placeholder="Ex: 16"
+                                    disabled={!editing}
+                                />
+                            </div>
+                        )}
+
+
+                        <div className="form-group">
+                            <label htmlFor="month">Mês<span className="required">*</span></label>
+                            <input
+                                type="month"
+                                id="month"
+                                name="month"
+                                value={formData.month}
+                                onChange={handleChange}
+                                disabled={!editing}
+                                required
+                            />
+                        </div>
+                    </div>
                     <button type="button" className="toggle-end-date" onClick={toggleEndDate}>
                         {showEndDate ? 'Remover Dia Final' : 'Adicionar Dia Final'}
                     </button>
 
-                    <div className="form-group">
-                        <label htmlFor="month">Mês<span className="required">*</span></label>
-                        <input
-                            type="month"
-                            id="month"
-                            name="month"
-                            value={formData.month}
-                            onChange={handleChange}
-                            required
-                        />
+                    <div className='form-group-row'>
+                        <div className="form-group">
+                            <label htmlFor="startTime">Hora de Início<span className="required">*</span></label>
+                            <input
+                                type="time"
+                                id="startTime"
+                                name="startTime"
+                                value={formData.startTime}
+                                onChange={handleChange}
+                                disabled={!editing}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="endTime">Hora de Término<span className="required">*</span></label>
+                            <input
+                                type="time"
+                                id="endTime"
+                                name="endTime"
+                                value={formData.endTime}
+                                onChange={handleChange}
+                                disabled={!editing}
+                                required
+                            />
+                        </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="startTime">Hora de Início<span className="required">*</span></label>
-                        <input
-                            type="time"
-                            id="startTime"
-                            name="startTime"
-                            value={formData.startTime}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
 
-                    <div className="form-group">
-                        <label htmlFor="endTime">Hora de Término<span className="required">*</span></label>
-                        <input
-                            type="time"
-                            id="endTime"
-                            name="endTime"
-                            value={formData.endTime}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                    <div className='form-group-row'>
+                        <div className="form-group">
+                            <label htmlFor="department">Departamento<span className="required">*</span></label>
+                            <select
+                                id="department"
+                                name="department"
+                                value={departament ? departament : formData.department}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    if (e.target.value === 'Outro') {
+                                        setShowModal(true);
+                                    } else {
+                                        setDepartament(e.target.value);
+                                    }
+                                }}
+                                disabled={!editing}
+                                required
+                            >
+                                <option value="">Selecione um departamento</option>
+                                {departments.map(dep => (
+                                    <option key={dep.id} value={dep.nome}>
+                                        {dep.nome}
+                                    </option>
+                                ))}
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
 
-                    <div className="form-group">
-                        <label htmlFor="department">Departamento<span className="required">*</span></label>
-                        <select
-                            id="department"
-                            name="department"
-                            value={departament ? departament : formData.department}
-                            onChange={(e) => {
-                                handleChange(e);
-                                if (e.target.value === 'Outro') {
-                                    setShowModal(true);
-                                } else {
-                                    setDepartament(e.target.value);
-                                }
-                            }}
-                            required
-                        >
-                            <option value="">Selecione um departamento</option>
-                            {departments.map(dep => (
-                                <option key={dep.id} value={dep.nome}>
-                                    {dep.nome}
-                                </option>
-                            ))}
-                            <option value="Outro">Outro</option>
-                        </select>
+                        <div className="form-group">
+                            <label htmlFor="responsible">Responsável<span className="required">*</span></label>
+                            <input
+                                type="text"
+                                id="responsible"
+                                name="responsible"
+                                value={formData.responsible}
+                                onChange={handleChange}
+                                required
+                                placeholder="Nome do responsável"
+                                disabled={!editing}
+                            />
+                        </div>
                     </div>
-
-                    <div className="form-group">
-                        <label htmlFor="responsible">Responsável<span className="required">*</span></label>
-                        <input
-                            type="text"
-                            id="responsible"
-                            name="responsible"
-                            value={formData.responsible}
-                            onChange={handleChange}
-                            required
-                            placeholder="Nome do responsável"
-                        />
-                    </div>
-
                     <div className="form-group">
                         <label htmlFor="location">Localização<span className="required">*</span></label>
                         <input
@@ -278,6 +299,7 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
                             onChange={handleChange}
                             required
                             placeholder="Localização do evento"
+                            disabled={!editing}
                         />
                     </div>
 
@@ -290,6 +312,7 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
                             onChange={handleChange}
                             required
                             placeholder="Descrição do evento"
+                            disabled={!editing}
                         ></textarea>
                     </div>
 
@@ -307,8 +330,8 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
                     </div>
 
                     <div className="form-group">
-                        <button type="submit">Salvar</button>
-                        <button type="button" onClick={handleCancel}>Cancelar</button>
+                        {editing && <button className='btn btn-primary' type="submit">Salvar</button>}
+                        <button className='btn btn-secondary' type="button" onClick={handleCancel}>Cancelar</button>
                     </div>
 
                     {formError && <p className="form-error">{formError}</p>}
@@ -334,8 +357,8 @@ const EventForm = ({ onSave, onCancel, userPrivileges, initialData, departments,
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <button type="submit">Adicionar</button>
-                                    <button type="button" onClick={handleCancelAddDepartament}>Cancelar</button>
+                                    <button className='btn btn-primary' type="submit">Adicionar</button>
+                                    <button className='btn btn-secondary' type="button" onClick={handleCancelAddDepartament}>Cancelar</button>
                                 </div>
                             </form>
                         </div>

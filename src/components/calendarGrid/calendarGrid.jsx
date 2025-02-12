@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   startOfMonth,
   endOfMonth,
@@ -19,6 +19,7 @@ const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEvent
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [dayView, setDayView] = useState({});
 
   const startDate = startOfWeek(startOfMonth(currentDate));
   const endDate = endOfWeek(endOfMonth(currentDate));
@@ -27,6 +28,17 @@ const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEvent
   const currentYear = getYear(currentDate);
   const currentMonth = getMonth(currentDate) + 1;
   const monthKey = `${currentYear}-${currentMonth.toString().padStart(2, "0")}`;
+
+  useEffect(() => {
+    const filteredEvents = events[currentYear]?.months?.[monthKey]?.filter((event) =>
+      isSameDay(
+        new Date(new Date(event.month + "-" + event.day).setDate(new Date(event.month + "-" + event.day).getDate() + 1)),
+        dayView
+      )
+    ) || [];
+    setSelectedEvents(filteredEvents);
+  }, [events, dayView]); // Atualiza sempre que `events` ou `dayView` mudar
+
 
   const handlePrevMonth = () => {
     setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
@@ -48,6 +60,7 @@ const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEvent
     if (eventList.length > 0) {
       setSelectedEvents(eventList);
       setModalOpen(true);
+      setDayView(day);
     }
   };
 
@@ -108,7 +121,7 @@ const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEvent
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h3>Eventos do Dia</h3>
+              {`${format(dayView, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`}
             </div>
             <div className="modal-body">
               {selectedEvents.map((event, index) => (

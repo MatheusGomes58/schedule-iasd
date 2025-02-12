@@ -79,7 +79,7 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
         // Adiciona o botão de editar se o evento não estiver aprovado ou se o usuário for administrador
         if ((!event.active && !event.sended) && (event.organizer === user.email || setUserPrivileges.adm)) {
             buttons.push(
-                <button key="edit" className='button button-edit' onClick={() => onEditEvent(event)}>
+                <button key="edit" className='button button-edit' onClick={() => onEditEvent(event, true)}>
                     <FaEdit /> Editar
                 </button>
             );
@@ -113,24 +113,34 @@ const EventRow = ({ event, onDeleteEvent, onSendEvent, onEditEvent, updateEventF
     };
 
     return (
-        <tr id={event.id} className={handleClassName(event)}>
-            <td>{event.day}{event.endDay ? ' - ' + event.endDay : ''}</td>
-            <td>{event.startTime} - {event.endTime}</td>
-            <td>{event.department}</td>
-            <td>{event.responsible}</td>
-            <td>{event.description}</td>
-            <td>{event.location}</td>
+        <tr id={event.id} className={handleClassName(event)} style={{ cursor: "pointer" }}>
+            <td onClick={() => onEditEvent(event, false)}>
+                {event.day}{event.endDay ? ' - ' + event.endDay : ''}
+            </td>
+            <td onClick={() => onEditEvent(event, false)}>
+                {event.startTime} - {event.endTime}
+            </td>
+            <td onClick={() => onEditEvent(event, false)}>{event.title}</td>
+            <td onClick={() => onEditEvent(event, false)}>{event.responsible}</td>
+            <td onClick={() => onEditEvent(event, false)}>{event.location}</td>
+
+            {/* Últimas células NÃO CLICÁVEIS */}
             {setUserPrivileges && (
                 <td className='printable-content'>
                     {rendererStatus(event, setUserPrivileges)}
                 </td>
-            )} {setUserPrivileges && (
+            )}
+            {setUserPrivileges && (
                 <td className='printable-content'>
-                    {getEventActionButtons(event, setUserPrivileges)}
+                    {getEventActionButtons(event, setUserPrivileges).map((button, index) => (
+                        <span key={index}>{button}</span>
+                    ))}
                 </td>
             )}
         </tr>
+
     );
+
 };
 
 export default EventRow;

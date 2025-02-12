@@ -116,9 +116,8 @@ const EventTable = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEve
                                     <tr className='tableHead'>
                                         <th>Dia</th>
                                         <th>Horário</th>
-                                        <th>Departamento</th>
+                                        <th>Evento</th>
                                         <th>Responsável</th>
-                                        <th>Descrição</th>
                                         <th>Local</th>
                                         {setUserPrivileges && (
                                             <th className='printable-content'>Status do evento</th>

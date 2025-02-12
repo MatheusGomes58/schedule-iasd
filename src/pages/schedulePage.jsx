@@ -129,14 +129,17 @@ const SchedulePage = ({ user }) => {
 
   const onSetSearch = () => {
     setSearchBarVisible(!searchBarVisible);
-    setCalendarSwitch(calendarSwitch?!calendarSwitch:calendarSwitch);
+    setCalendarSwitch(calendarSwitch ? !calendarSwitch : calendarSwitch);
   };
 
   return (
     <div className="schedule-page">
       <div className="menu printable-content">
         {userPrivileges && (
-          <button className="menu-button" onClick={() => setShowForm(true)}>
+          <button className="menu-button" onClick={() => {
+            setShowForm(true);
+            setEditing(true);
+          }}>
             <FaPlus /> Add
           </button>
         )}
@@ -156,38 +159,38 @@ const SchedulePage = ({ user }) => {
           {userPrivileges ? "Logout" : "Login"}
         </button>
         <button className={"menu-button " + !searchBarVisible} onClick={handleSwitchSchedule} disabled={searchBarVisible}>
-          {calendarSwitch ? <FaListAlt /> :<FaCalendarAlt />}
+          {calendarSwitch ? <FaListAlt /> : <FaCalendarAlt />}
           {calendarSwitch ? "Lista" : "Calendário"}
         </button>
       </div>
 
-      {calendarSwitch? 
-        <Calendar 
-          events={events} 
+      {calendarSwitch ?
+        <Calendar
+          events={events}
           onDeleteEvent={handleDeleteEvent}
           onSendEvent={handleSendEvent}
-          onEditEvent={(event) => {
-            setEditing(true);
+          onEditEvent={(event, boolean) => {
+            setEditing(boolean);
             setSelectedEvent(event);
             setShowForm(true);
           }}
           updateEventField={handleUpdateEventField}
           setUserPrivileges={userPrivileges}
           searchTerm={searchTerm}
-        />: 
+        /> :
         <EventTable
           events={events}
           onDeleteEvent={handleDeleteEvent}
           onSendEvent={handleSendEvent}
-          onEditEvent={(event) => {
-            setEditing(true);
+          onEditEvent={(event, boolean) => {
+            setEditing(boolean);
             setSelectedEvent(event);
             setShowForm(true);
           }}
           updateEventField={handleUpdateEventField}
           setUserPrivileges={userPrivileges}
           searchTerm={searchTerm}
-      />}
+        />}
       {confirmationModalVisible && (
         <ConfirmationModal
           message={confirmationMessage}
@@ -222,6 +225,7 @@ const SchedulePage = ({ user }) => {
             initialData={selectedEvent}
             eventsRef={events}
             addDepartment={addDepartment}
+            editing={editing}
           />
         </div>
       )}

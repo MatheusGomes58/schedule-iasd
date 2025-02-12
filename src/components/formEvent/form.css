@@ -25,7 +25,30 @@
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
+    max-height: 80vh; /* Para garantir que o modal não ultrapasse a tela */
+    overflow-y: auto; /* Adiciona rolagem se necessário */
 }
+
+/* Estilização do scroll no Chrome, Edge e Safari */
+.modal-content::-webkit-scrollbar {
+    width: 8px; /* Largura da barra */
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: #173f74; /* Cor da barra de rolagem */
+    border-radius: 4px; /* Bordas arredondadas */
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Cor do fundo do scroll */
+}
+
+/* Estilização do scroll no Firefox */
+.modal-content {
+    scrollbar-width: thin; /* Deixa a barra de rolagem mais fina */
+    scrollbar-color: #173f74 #f0f0f0; /* Cor do thumb e do track */
+}
+
 
 /* Estilo dos botões primário e secundário */
 .btn {
@@ -76,10 +99,18 @@
 }
 
 /* Grupos de Campos */
+.form-group-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+
+/* Grupos de Campos */
 .form-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
+    width: 100%;
 }
 
 /* Labels */
@@ -187,6 +218,18 @@
 .cancel-button:hover {
     background-color: #cccccc;
 }
+
+.titleInput{
+    padding: 10px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 2rem;
+    text-align: center;
+    color: #333333;
+    transition: border-color 0.3s ease;
+    margin: 2vh;
+}
+
 
 /* Responsividade */
 @media (max-width: 600px) {
