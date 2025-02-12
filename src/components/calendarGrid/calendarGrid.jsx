@@ -13,9 +13,13 @@ import {
 } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import "./calendarGrid.css";
+import EventRow from '../eventTable/eventRow';
 
-const Calendar = ({ events }) => {
+const Calendar = ({ events, onDeleteEvent, onSendEvent, onEditEvent, updateEventField, setUserPrivileges }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const startDate = startOfWeek(startOfMonth(currentDate));
   const endDate = endOfWeek(endOfMonth(currentDate));
   const days = eachDayOfInterval({ start: startDate, end: endDate });
@@ -32,6 +36,21 @@ const Calendar = ({ events }) => {
     setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
+  const handleDayClick = (day) => {
+    const eventList =
+      events[currentYear]?.months?.[monthKey]?.filter((event) =>
+        isSameDay(
+          new Date(new Date(event.month + "-" + event.day).setDate(new Date(event.month + "-" + event.day).getDate() + 1)),
+          day
+        )
+      ) || [];
+
+    if (eventList.length > 0) {
+      setSelectedEvents(eventList);
+      setModalOpen(true);
+    }
+  };
+
   return (
     <div>
       <div className="monthBanner">
@@ -44,26 +63,36 @@ const Calendar = ({ events }) => {
       </div>
       <div className="scheduleGrid">
         <div className="calendar">
-
           <div className="days-grid">
             {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day) => (
               <div key={day} className="weekday">
                 {day}
               </div>
             ))}
-            {days.map((day) => (
-              <div
-                key={day}
-                className={`day ${!isSameMonth(day, currentDate) ? "disabled" : ""}`}
-              >
-                <span>{format(day, "d")}</span>
-                {events[currentYear]?.months?.[monthKey]?.filter((event) =>
-                  isSameDay(new Date(new Date(event.month + "-" + event.day).setDate(new Date(event.month + "-" + event.day).getDate() + 1)), day)
-                ).map((event, index) => (
-                  <div key={index} className="event">{event.title}</div>
-                ))}
-              </div>
-            ))}
+            {days.map((day) => {
+              const dayEvents =
+                events[currentYear]?.months?.[monthKey]?.filter((event) =>
+                  isSameDay(
+                    new Date(new Date(event.month + "-" + event.day).setDate(new Date(event.month + "-" + event.day).getDate() + 1)),
+                    day
+                  )
+                ) || [];
+
+              return (
+                <div
+                  key={day}
+                  className={`day ${!isSameMonth(day, currentDate) ? "disabled" : ""}`}
+                  onClick={() => handleDayClick(day)}
+                  style={{ cursor: dayEvents.length > 0 ? "pointer" : "default" }}
+                >
+                  <span>{format(day, "d")}</span>
+                  {dayEvents.length > 0 &&
+                    dayEvents.map((event, index) => (
+                      <div key={index} className="event">{event.title}</div>
+                    ))}
+                </div>
+              );
+            })}
           </div>
 
           {/* Botões de navegação flutuantes */}
@@ -73,6 +102,33 @@ const Calendar = ({ events }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal para exibir eventos do dia */}
+      {modalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Eventos do Dia</h3>
+            </div>
+            <div className="modal-body">
+              {selectedEvents.map((event, index) => (
+                <EventRow
+                  key={event.id}
+                  event={event}
+                  onDeleteEvent={onDeleteEvent}
+                  onSendEvent={onSendEvent}
+                  onEditEvent={onEditEvent}
+                  updateEventField={updateEventField}
+                  setUserPrivileges={setUserPrivileges}
+                />
+              ))}
+            </div>
+            <div className="modal-footer">
+              <button className="modal-close" onClick={() => setModalOpen(false)}>Fechar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

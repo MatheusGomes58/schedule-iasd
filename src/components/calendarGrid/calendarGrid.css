@@ -142,3 +142,91 @@
       color: #173f74;
   }
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: auto;
+  max-width: 90vw; 
+  height: auto; /* Ajusta a altura ao conteúdo */
+  max-height: 80vh; /* Nunca ultrapassa 80% da altura da tela */
+  overflow-y: auto; /* Adiciona rolagem interna se necessário */
+  display: flex;
+  flex-direction: column;
+}
+
+
+.modal-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.modal-body {
+  flex-grow: 1; /* Faz com que o conteúdo se ajuste ao tamanho disponível */
+  overflow-y: auto; /* Impede que o conteúdo vaze */
+  max-height: 60vh; /* Ajusta a altura máxima do conteúdo */
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.modal-close {
+  margin-top: 20px;
+  padding: 10px 20px;
+  width: 100%;
+  border-radius: 30px;
+  background-color: #d9534f;
+  color: #222;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.modal-close:hover {
+  background-color: #c9302c;
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95vw;
+    max-height: 85vh;
+    padding: 15px;
+  }
+}
